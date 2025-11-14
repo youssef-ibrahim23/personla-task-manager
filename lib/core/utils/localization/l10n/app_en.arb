@@ -1,0 +1,8 @@
+{
+  "@@locale": "en",
+  "app_title": "Personal Task",
+  "sign_in": "Sign In",
+  "sign_up": "Sign Up",
+  "email": "Email",
+  "password": "Password"
+}

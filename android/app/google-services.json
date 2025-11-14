@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616244262881",
+    "project_id": "personla-task",
+    "storage_bucket": "personla-task.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616244262881:android:a65fe27e7fee31738004a0",
+        "android_client_info": {
+          "package_name": "com.example.personal_task"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB80dt4Z4LDpeeXPoyRSubuBeqLyCLMssM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
