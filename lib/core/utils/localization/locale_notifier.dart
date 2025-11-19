@@ -14,4 +14,8 @@ class LocaleNotifier extends StateNotifier<Locale> {
   void resetLocale() {
     state = const Locale(AppStrings.defaultLocale);
   }
+
+  String getLocale(){
+    return state.languageCode;
+  }
 }

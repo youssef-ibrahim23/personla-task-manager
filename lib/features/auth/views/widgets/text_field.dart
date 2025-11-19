@@ -9,8 +9,8 @@ class CustomTextField extends StatefulWidget {
 
   const CustomTextField({
     super.key,
-    this.hintText,
-    this.controller,
+    required this.hintText,
+    required this.controller,
     this.obscureText = false,
     this.keyboardType,
     this.isHaveSuffixIcon = false,

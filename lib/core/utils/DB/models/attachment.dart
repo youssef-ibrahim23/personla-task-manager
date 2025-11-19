@@ -1,5 +1,5 @@
 class Attachment{
-  String? id;
+  int? id;
   String taskId;
   String filePath;
 
@@ -11,7 +11,7 @@ class Attachment{
 
   factory Attachment.fromMap(Map<String, dynamic> map) {
     return Attachment(
-      id: map['ID']?.toString(),
+      id: map['ID'],
       taskId: map['TASK_ID'],
       filePath: map['FILE_PATH'],
     );

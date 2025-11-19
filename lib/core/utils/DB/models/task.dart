@@ -1,5 +1,5 @@
 class Task {
-  String? id;
+  int? id;
   String ownerId;
   String title;
   String? description;
@@ -27,7 +27,7 @@ class Task {
 
   factory Task.fromMap(Map<String, dynamic> map) {
     return Task(
-      id: map['ID']?.toString(),
+      id: map['ID'],
       ownerId: map['OWNER_ID'],
       title: map['TITLE'],
       description: map['DESCRIPTION'],

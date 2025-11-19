@@ -7,7 +7,6 @@ class AppThemes {
   // LIGHT THEME //
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    fontFamily: AppStrings.primaryFont,
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.backgroundLight,
     colorScheme: ColorScheme.light(

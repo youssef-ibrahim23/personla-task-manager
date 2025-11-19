@@ -1,15 +1,14 @@
-import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class User {
-  final String? uid;
-  final String name;
-  final String email;
-  final String phoneNumber;
-  final String? password;
-  final XFile? image;
+  String? uid;
+  String name;
+  String email;
+  String phoneNumber;
+  String? password;
+  XFile? image;
 
-  const User({
+  User({
     this.uid,
     required this.name,
     required this.email,

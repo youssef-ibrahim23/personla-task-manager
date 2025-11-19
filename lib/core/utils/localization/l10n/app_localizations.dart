@@ -98,20 +98,20 @@ abstract class AppLocalizations {
   /// No description provided for @app_title.
   ///
   /// In en, this message translates to:
-  /// **'Personal Task'**
+  /// **'Personal Tasks'**
   String get app_title;
 
-  /// No description provided for @sign_in.
+  /// No description provided for @login.
   ///
   /// In en, this message translates to:
-  /// **'Sign In'**
-  String get sign_in;
+  /// **'Login'**
+  String get login;
 
-  /// No description provided for @sign_up.
+  /// No description provided for @logging.
   ///
   /// In en, this message translates to:
-  /// **'Sign Up'**
-  String get sign_up;
+  /// **'logging'**
+  String get logging;
 
   /// No description provided for @email.
   ///
@@ -124,6 +124,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password'**
   String get password;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @registering.
+  ///
+  /// In en, this message translates to:
+  /// **'Registering'**
+  String get registering;
+
+  /// No description provided for @not_have_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t Have An Account?'**
+  String get not_have_account;
+
+  /// No description provided for @create_your_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Your Account'**
+  String get create_your_account;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @phone_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phone_number;
+
+  /// No description provided for @already_have_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Already Have An Account'**
+  String get already_have_account;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

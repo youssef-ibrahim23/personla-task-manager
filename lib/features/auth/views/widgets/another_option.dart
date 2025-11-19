@@ -1,43 +1,43 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../register_view.dart';
 
-class AnotherOption extends StatelessWidget{
-
+class AnotherOption extends StatelessWidget {
   bool isLogin;
 
   Widget page;
 
-  AnotherOption({super.key , required this.isLogin , required this.page});
+  AnotherOption({super.key, required this.isLogin, required this.page});
 
   @override
   Widget build(BuildContext context) {
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           isLogin
-          ? "Already Have an Account?"
-          : "Don't Have an Account?",
+              ? AppLocalizations.of(context)!.already_have_account
+              : AppLocalizations.of(context)!.not_have_account,
           style: TextStyle(color: AppColors.dark),
-        ),
+        ).animate().move(begin: const Offset(0, 100), duration: 500.ms),
         TextButton(
           child: Text(
             isLogin
-            ? "Login"
-            : "Register",
+                ? AppLocalizations.of(context)!.login
+                : AppLocalizations.of(context)!.register,
             style: TextStyle(color: AppColors.primary),
-          ),
+          ).animate().move(begin: const Offset(0, 100), duration: 500.ms),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => page,
-              ),
-            );
+            if (isLogin) {
+              Navigator.pop(context);
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => page),
+              );
+            }
           },
         ),
       ],

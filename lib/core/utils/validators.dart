@@ -1,5 +1,16 @@
 class Validators {
 
+  static String? validateName(String? value) {
+    if (value == null || value
+        .trim()
+        .isEmpty) {
+      return 'Name is required';
+    }
+    if(value.length < 3){
+      return 'Name is Very Short';
+    }
+  }
+
   static String? validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Email is required';
@@ -10,6 +21,17 @@ class Validators {
       return 'Enter a valid email address';
     }
     return null;
+  }
+
+  static String? validatePhoneNumber(String? value) {
+    if (value == null || value
+        .trim()
+        .isEmpty) {
+      return 'Phone Number is required';
+    }
+    if(value.length != 11){
+      return 'Enter a valid phone number';
+    }
   }
 
   static String? validatePassword(String? value) {

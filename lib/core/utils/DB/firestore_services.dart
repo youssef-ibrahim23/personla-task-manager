@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:personal_task/core/utils/DB/models/attachement.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
+import 'package:personal_task/core/utils/DB/models/attachment.dart';
 import 'package:personal_task/core/utils/helpers.dart';
 
 import 'models/task.dart';
@@ -12,13 +13,7 @@ class FireStoreServices {
 
   Future<void> uploadUser({required User user}) async {
     try {
-      await firebaseFirestore.collection('users').doc(user.uid.toString()).set({
-        'name': user.name,
-        'email': user.email,
-        'uid': user.uid,
-        'phone': user.phoneNumber,
-        'image': Helpers.imageToBase64(File(user.image!.path)),
-      });
+      await firebaseFirestore.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).set(user.toMap());
     } catch (e) {
       print(e);
       return;
@@ -45,7 +40,7 @@ class FireStoreServices {
 
   Future<void> uploadTask({required Task task}) async {
     try {
-      await firebaseFirestore.collection('tasks').doc(task.id).set({
+      await firebaseFirestore.collection('tasks').doc(task.id.toString()).set({
         'title': task.title,
         'description': task.description,
         'Priority': task.priority,
@@ -63,7 +58,7 @@ class FireStoreServices {
 
   Future<void> updateTask({required Task task}) async {
     try {
-      await firebaseFirestore.collection('tasks').doc(task.id).update({
+      await firebaseFirestore.collection('tasks').doc(task.id.toString()).update({
         'title': task.title,
         'description': task.description,
         'Priority': task.priority,
@@ -110,7 +105,7 @@ class FireStoreServices {
 
   Future<void> uploadAttachment({required Attachment attachment}) async {
     try {
-      await firebaseFirestore.collection('attachments').doc(attachment.id).set({
+      await firebaseFirestore.collection('attachments').doc(attachment.id.toString()).set({
         'taskId': attachment.taskId,
         'filePath': attachment.filePath,
       });

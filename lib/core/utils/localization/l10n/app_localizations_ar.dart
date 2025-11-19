@@ -12,14 +12,35 @@ class AppLocalizationsAr extends AppLocalizations {
   String get app_title => 'المهام الشخصية';
 
   @override
-  String get sign_in => 'تسجيل الدخول';
+  String get login => 'تسجيل الدخول';
 
   @override
-  String get sign_up => 'إنشاء حساب';
+  String get logging => 'logging';
 
   @override
-  String get email => 'البريد الإلكتروني';
+  String get email => 'البريد الألكتروني';
 
   @override
   String get password => 'كلمة المرور';
+
+  @override
+  String get register => 'تسجيل';
+
+  @override
+  String get registering => 'يتم التسجيل';
+
+  @override
+  String get not_have_account => 'لا تمتلك حساب؟';
+
+  @override
+  String get create_your_account => 'انشئ حسابك';
+
+  @override
+  String get name => 'الاسم';
+
+  @override
+  String get phone_number => 'رقم الهاتف';
+
+  @override
+  String get already_have_account => '!بالفعل لديك حساب';
 }

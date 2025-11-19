@@ -1,37 +1,48 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:personal_task/features/auth/view-models/register_view_model.dart';
 
-class ImageWidget extends StatefulWidget {
 
-  XFile? pickedImage;
-
-  ImageWidget({super.key, required this.pickedImage});
+class ImageWidget extends ConsumerWidget {
 
   @override
-  State<ImageWidget> createState() => _ImageWidgetState();
-}
+  Widget build(BuildContext context , WidgetRef ref) {
+    final image = ref.watch(pickedImageProvider);
+    void pickImage() async {
+      final ImagePicker imagePicker = ImagePicker();
 
-class _ImageWidgetState extends State<ImageWidget> {
+      final ImageSource? source = await showDialog<ImageSource>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Select Image Source'),
+          content: const Text('Where do you want to pick the image from?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, ImageSource.camera),
+              child: const Text('Camera'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, ImageSource.gallery),
+              child: const Text('Gallery'),
+            ),
+          ],
+        ),
+      );
 
-  ImagePicker imagePicker = ImagePicker();
-
-  void _pickImage() async {
-    final XFile? image = await imagePicker.pickImage(
-      source: ImageSource.gallery,
-    );
-    if (image != null) {
-      setState(() {
-        widget.pickedImage = image;
-      });
+      if (source != null) {
+        final XFile? image = await imagePicker.pickImage(source: source);
+        if (image != null) {
+          ref.read(pickedImageProvider.notifier).state = image;
+        }
+      }
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return InkWell(
-      onTap: _pickImage,
+      onTap: pickImage,
       child: Container(
         width: 100,
         height: 100,
@@ -40,9 +51,9 @@ class _ImageWidgetState extends State<ImageWidget> {
           border: Border.all(color: Colors.grey, width: 2),
         ),
         child: ClipOval(
-          child: widget.pickedImage != null
+          child: image != null
               ? Image.file(
-            File(widget.pickedImage!.path),
+            File(image!.path),
             width: 100,
             height: 100,
             fit: BoxFit.cover,

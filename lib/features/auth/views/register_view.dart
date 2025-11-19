@@ -1,9 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:personal_task/core/utils/helpers.dart';
 import 'package:personal_task/core/utils/DB/models/user.dart';
+import 'package:personal_task/features/auth/view-models/register_view_model.dart';
 import 'package:personal_task/features/auth/views/login_view.dart';
 import 'package:personal_task/features/auth/views/widgets/another_option.dart';
 import 'package:personal_task/features/auth/views/widgets/button.dart';
@@ -11,10 +12,8 @@ import 'package:personal_task/features/auth/views/widgets/image_widget.dart';
 import 'package:personal_task/features/auth/views/widgets/register_header.dart';
 import 'package:personal_task/features/auth/views/widgets/text_field.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/utils/localization/l10n/app_localizations.dart';
 import '../../../core/utils/validators.dart';
-import '../../home/view/home_view.dart';
-import '../view-models/auth_view_model.dart';
 
 class RegisterView extends ConsumerStatefulWidget {
   const RegisterView({super.key});
@@ -24,10 +23,7 @@ class RegisterView extends ConsumerStatefulWidget {
 }
 
 class _RegisterStateView extends ConsumerState<RegisterView> {
-
-  XFile? pickedImage;
-
-  final Map<String ,TextEditingController> _controllers = {
+  final Map<String, TextEditingController> _controllers = {
     'name': TextEditingController(),
     'email': TextEditingController(),
     'phoneNumber': TextEditingController(),
@@ -35,54 +31,110 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
   };
 
   void _register() {
+    final nameError = Validators.validateName(_controllers['name']!.text);
 
     final emailError = Validators.validateEmail(_controllers['email']!.text);
 
-    final passwordError = Validators.validatePassword(_controllers['password']!.text);
+    final phoneNumberError = Validators.validatePhoneNumber(
+      _controllers['phoneNumber']!.text,
+    );
+
+    final passwordError = Validators.validatePassword(
+      _controllers['password']!.text,
+    );
 
     if (emailError != null) {
-      Helpers.displayDialog(context, 'Invalid Email', emailError, DialogType.error);
+      Helpers.displayDialog(
+        context: context,
+        title: 'Invalid Email',
+        message: emailError,
+        dialogType: DialogType.error,
+        isRegister: false,
+      );
       return;
     } else if (passwordError != null) {
-      Helpers.displayDialog(context, 'Weak Password', passwordError, DialogType.error);
+      Helpers.displayDialog(
+        context: context,
+        title: 'Weak Password',
+        message: passwordError,
+        dialogType: DialogType.error,
+        isRegister: false,
+      );
       return;
+    } else if (nameError != null) {
+      Helpers.displayDialog(
+        context: context,
+        title: 'Invalid Name',
+        message: nameError,
+        dialogType: DialogType.error,
+        isRegister: false,
+      );
+      return;
+    } else if (phoneNumberError != null) {
+      Helpers.displayDialog(
+        context: context,
+        title: 'Invalid Phone Number',
+        message: phoneNumberError,
+        dialogType: DialogType.error,
+        isRegister: false,
+      );
+      return;
+    } else {
+      ref
+          .read(registerViewModelProvider.notifier)
+          .register(
+            User(
+              name: _controllers['name']!.text,
+              email: _controllers['email']!.text,
+              phoneNumber: _controllers['phoneNumber']!.text,
+              password: _controllers['password']!.text,
+              image: ref.watch(pickedImageProvider),
+            ),
+          );
     }
-    ref
-        .read(authViewModelProvider.notifier)
-        .register(
-      User(
-        name: _controllers['name']!.text,
-        email: _controllers['email']!.text,
-        phoneNumber: _controllers['phoneNumber']!.text,
-        password: _controllers['password']!.text,
-        image: pickedImage,
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-
     final double screenWidth = MediaQuery.of(context).size.width;
 
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    final registerState = ref.watch(authViewModelProvider);
+    final registerStatus = ref.watch(registerViewModelProvider);
 
-    ref.listen(authViewModelProvider, (previous, next) {
+    ref.listen(registerViewModelProvider, (previous, next) {
       next.when(
-        data: (user) async {
-          if (user == null) {
-            Helpers.displayDialog(context, 'Field To Register' , 'Something went wrong please , try again', DialogType.error);
+        data: (userCredential) async {
+          if (userCredential == null) {
+            Helpers.displayDialog(
+              context: context,
+              title: 'Field To Register',
+              message: 'Something went wrong please , try again',
+              dialogType: DialogType.error,
+              isRegister: false,
+            );
+            return;
           } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomeView()),
+            Helpers.displayDialog(
+              context: context,
+              title: 'Register Success',
+              message:
+                  'We were sent a email verification to your email, check your email',
+              dialogType: DialogType.success,
+              isRegister: true,
+              email: userCredential.user!.email,
             );
           }
         },
         error: (error, _) {
-          Helpers.displayDialog(context, 'Field To Register' , 'Something went wrong please , try again', DialogType.error);
+          Helpers.displayDialog(
+            context: context,
+            title: 'Field To Register',
+            message: error.toString(),
+            dialogType: DialogType.error,
+            isRegister: false,
+          );
+          return;
         },
         loading: () {},
       );
@@ -99,7 +151,7 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
               SizedBox(height: screenHeight * 0.05),
               Container(
                 width: screenWidth,
-                height: screenHeight * 0.73,
+                height: screenHeight * 0.75,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
@@ -110,49 +162,55 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        ImageWidget(pickedImage: pickedImage),
+                        ImageWidget().animate().moveX(
+                          begin: -300,
+                          duration: 500.ms,
+                        ),
                         SizedBox(width: screenWidth * 0.1),
-                        IconButton(onPressed: (){
-                          setState(() {
-                            pickedImage = null;
-                          });
-                        }, icon: Icon(Icons.delete) , color: Colors.red,)
+                        IconButton(
+                          onPressed: () {
+                            ref.read(pickedImageProvider.notifier).state = null;
+                          },
+                          icon: Icon(Icons.delete),
+                          color: Colors.red,
+                        ).animate().moveX(begin: 300, duration: 500.ms),
                       ],
                     ),
                     SizedBox(height: screenHeight * 0.03),
                     CustomTextField(
-                      hintText: "Name",
+                      hintText: AppLocalizations.of(context)!.name,
                       controller: _controllers['name'],
                       obscureText: false,
-                    ),
+                    ).animate().fadeIn(duration: 1.seconds),
                     SizedBox(height: screenHeight * 0.05),
                     CustomTextField(
-                      hintText: "Email",
+                      hintText: AppLocalizations.of(context)!.email,
                       controller: _controllers['email'],
                       obscureText: false,
-                    ),
+                    ).animate().fadeIn(duration: 1.seconds),
                     SizedBox(height: screenHeight * 0.05),
                     CustomTextField(
-                      hintText: "Phone Number",
+                      hintText: AppLocalizations.of(context)!.phone_number,
                       controller: _controllers['phoneNumber'],
                       obscureText: false,
-                    ),
+                    ).animate().fadeIn(duration: 1.seconds),
                     SizedBox(height: screenHeight * 0.05),
                     CustomTextField(
-                      hintText: "Password",
+                      hintText: AppLocalizations.of(context)!.password,
                       controller: _controllers['password'],
                       obscureText: true,
                       isHaveSuffixIcon: true,
-                    ),
+                    ).animate().fadeIn(duration: 1.seconds),
                     SizedBox(height: screenHeight * 0.03),
+
                     Button(
-                      text: registerState.isLoading
-                          ? "Registering"
-                          : "Register",
-                      onPressed: _register,
-                      state: registerState.isLoading,
-                    ),
-                    SizedBox(height: screenHeight * 0.01,),
+                      text: registerStatus!.isLoading
+                          ? AppLocalizations.of(context)!.registering
+                          : AppLocalizations.of(context)!.register,
+                      onPressed: registerStatus!.isLoading ? () {} : _register,
+                      state: registerStatus!.isLoading,
+                    ).animate().moveX(begin: 500, duration: 500.ms),
+                    SizedBox(height: screenHeight * 0.01),
                     AnotherOption(isLogin: true, page: LoginView()),
                   ],
                 ),
