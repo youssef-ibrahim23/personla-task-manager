@@ -27,8 +27,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
     'password': TextEditingController(),
   };
 
-  void _login() {
-    ref.read(loginViewModelProvider.notifier).signIn(
+  void _login() async {
+    await ref.read(loginViewModelProvider.notifier).signIn(
       LoginData(
         email: _controllers['email']!.text,
         password: _controllers['password']!.text,
@@ -81,7 +81,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.2),
+              SizedBox(height: screenHeight * 0.22),
               Text(
                 AppLocalizations.of(context)!.app_title,
                 textAlign: TextAlign.center,

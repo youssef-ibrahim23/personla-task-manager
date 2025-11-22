@@ -14,7 +14,6 @@ import 'package:personal_task/features/auth/views/widgets/register_header.dart';
 import 'package:personal_task/features/auth/views/widgets/text_field.dart';
 
 import '../../../core/utils/localization/l10n/app_localizations.dart';
-import '../../../core/utils/validators.dart';
 
 class RegisterView extends ConsumerStatefulWidget {
   const RegisterView({super.key});
@@ -31,8 +30,8 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
     'password': TextEditingController(),
   };
 
-  void _register() {
-      ref
+  void _register() async {
+      await ref
           .read(registerViewModelProvider.notifier)
           .register(
             User(
@@ -166,7 +165,7 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
                       text: registerStatus!.isLoading
                           ? AppLocalizations.of(context)!.registering
                           : AppLocalizations.of(context)!.register,
-                      onPressed: registerStatus!.isLoading ? () {} : _register,
+                      onPressed: _register,
                       state: registerStatus!.isLoading,
                     ).animate().moveX(begin: 500, duration: 500.ms),
                     SizedBox(height: screenHeight * 0.01),

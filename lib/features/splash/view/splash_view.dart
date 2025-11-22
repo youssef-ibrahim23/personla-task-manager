@@ -68,7 +68,7 @@ class _SplashViewState extends State<SplashView> {
               ),
             ).animate().shimmer(duration: 1.seconds, color: AppColors.light),
             Spacer(),
-            Image.asset("assets/images.jpeg")
+            Image.asset("assets/images.png")
                 .animate()
                 .move(begin: const Offset(0, 100), duration: 1.seconds)
                 .then()
