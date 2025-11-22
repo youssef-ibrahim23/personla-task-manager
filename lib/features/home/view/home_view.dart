@@ -1,13 +1,8 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:personal_task/core/utils/DB/db_services.dart';
 import 'package:personal_task/core/utils/helpers.dart';
-import 'package:personal_task/core/utils/DB/models/user.dart';
 import 'package:personal_task/features/auth/views/login_view.dart';
-import 'package:personal_task/features/profile/view/profile_view.dart';
+import 'package:personal_task/features/profile/views/profile_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -38,9 +33,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           TextButton(
             onPressed: () async {
-              Helpers.toggleLoginState();
-              FirebaseAuth.instance.signOut();
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ProfileView()),
               );

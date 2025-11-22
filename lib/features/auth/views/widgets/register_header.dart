@@ -5,13 +5,11 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/localization/l10n/app_localizations.dart';
 
-class RegisterHeader extends StatelessWidget{
+class RegisterHeader extends StatelessWidget {
   const RegisterHeader({super.key});
-
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         Text(
@@ -22,9 +20,9 @@ class RegisterHeader extends StatelessWidget{
             fontSize: 40,
           ),
         ).animate().shimmer(
-    color: AppColors.primary,
-    duration: 1.seconds
-    ),
+          color: AppColors.primary,
+          duration: 1.seconds,
+        ),
         Text(
           AppLocalizations.of(context)!.create_your_account,
           style: TextStyle(
@@ -34,9 +32,9 @@ class RegisterHeader extends StatelessWidget{
             fontWeight: FontWeight.w300,
           ),
         ).animate().shimmer(
-    color: AppColors.primary,
-    duration: 1.seconds
-    ),
+          color: AppColors.primary,
+          duration: 1.seconds,
+        ),
       ],
     );
   }

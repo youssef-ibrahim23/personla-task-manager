@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:personal_task/core/utils/DB/firestore_services.dart';
 import 'package:personal_task/core/utils/helpers.dart';
@@ -18,6 +20,10 @@ class AuthServices {
 
       if (credential.user == null) return null;
 
+      Helpers.saveUID(credential.user!.uid);
+
+      await Helpers.toggleLoginState();
+
       return credential;
     } catch (e) {
       print(e);
@@ -32,30 +38,15 @@ class AuthServices {
         password: user.password!,
       );
 
+      user.uid = credential.user!.uid;
+
+      user.image = await Helpers.imageToBase64(File(user.image!));
+
+      await DBServices.insertUser(user: user);
+
+      await FireStoreServices().uploadUser(user: user);
+
       await credential.user!.sendEmailVerification();
-
-      await DBServices.insertUser(
-        user: User(
-          uid: credential.user!.uid,
-          name: user.name,
-          email: user.email,
-          password: user.password,
-          phoneNumber: user.phoneNumber,
-          image: user.image,
-        ),
-      );
-      await FireStoreServices().uploadUser(user: User(
-        uid: credential.user!.uid,
-        name: user.name,
-        email: user.email,
-        password: user.password,
-        phoneNumber: user.phoneNumber,
-        image: user.image,
-      ),);
-
-      Helpers.saveUID(credential.user!.uid);
-
-      await Helpers.toggleLoginState();
 
       return credential;
     } on FirebaseAuthException catch (e) {

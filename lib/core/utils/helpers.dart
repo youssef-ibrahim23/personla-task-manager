@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:device_apps_plus/device_apps_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Helpers {
@@ -28,7 +29,7 @@ class Helpers {
     required String title,
     required String message,
     required DialogType dialogType,
-    required bool isRegister,
+    required bool openMailOption,
     String? email,
   }) {
     AwesomeDialog(
@@ -36,8 +37,8 @@ class Helpers {
       dialogType: dialogType,
       title: title,
       desc: message,
-      btnOkText: isRegister ? 'Open Mail' : null,
-      btnOkOnPress: isRegister
+      btnOkText: openMailOption ? 'Open Mail' : null,
+      btnOkOnPress: openMailOption
           ? () async {
         await DeviceAppsPlus().openApp('com.google.android.gm');
       }
@@ -46,13 +47,14 @@ class Helpers {
   }
 
   static Future<bool> isConnectedToInternet() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return true;
-      }
-      return false;
-    } on SocketException catch (e) {
+
+    const MethodChannel _channel = MethodChannel('app.network/utils');
+
+     try {
+      final bool result = await _channel.invokeMethod('isConnected');
+      return result;
+    } on PlatformException catch (e) {
+      print('Error checking internet connection: $e');
       return false;
     }
   }
@@ -66,6 +68,14 @@ class Helpers {
       return null;
     } catch (e) {
       print('Error converting image to Base64: $e');
+      return null;
+    }
+  }
+  static Future<dynamic> imageToFile(String base64String) async {
+    try {
+      return base64Decode(base64String);
+    } catch (e) {
+      print('Error converting Base64 to image: $e');
       return null;
     }
   }

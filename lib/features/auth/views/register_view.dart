@@ -2,13 +2,14 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:personal_task/core/shared/image/image_providers.dart';
 import 'package:personal_task/core/utils/helpers.dart';
 import 'package:personal_task/core/utils/DB/models/user.dart';
 import 'package:personal_task/features/auth/view-models/register_view_model.dart';
 import 'package:personal_task/features/auth/views/login_view.dart';
 import 'package:personal_task/features/auth/views/widgets/another_option.dart';
-import 'package:personal_task/features/auth/views/widgets/button.dart';
-import 'package:personal_task/features/auth/views/widgets/image_widget.dart';
+import 'package:personal_task/core/shared/button/button.dart';
+import 'package:personal_task/core/shared/image/image_widget.dart';
 import 'package:personal_task/features/auth/views/widgets/register_header.dart';
 import 'package:personal_task/features/auth/views/widgets/text_field.dart';
 
@@ -31,55 +32,6 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
   };
 
   void _register() {
-    final nameError = Validators.validateName(_controllers['name']!.text);
-
-    final emailError = Validators.validateEmail(_controllers['email']!.text);
-
-    final phoneNumberError = Validators.validatePhoneNumber(
-      _controllers['phoneNumber']!.text,
-    );
-
-    final passwordError = Validators.validatePassword(
-      _controllers['password']!.text,
-    );
-
-    if (emailError != null) {
-      Helpers.displayDialog(
-        context: context,
-        title: 'Invalid Email',
-        message: emailError,
-        dialogType: DialogType.error,
-        isRegister: false,
-      );
-      return;
-    } else if (passwordError != null) {
-      Helpers.displayDialog(
-        context: context,
-        title: 'Weak Password',
-        message: passwordError,
-        dialogType: DialogType.error,
-        isRegister: false,
-      );
-      return;
-    } else if (nameError != null) {
-      Helpers.displayDialog(
-        context: context,
-        title: 'Invalid Name',
-        message: nameError,
-        dialogType: DialogType.error,
-        isRegister: false,
-      );
-      return;
-    } else if (phoneNumberError != null) {
-      Helpers.displayDialog(
-        context: context,
-        title: 'Invalid Phone Number',
-        message: phoneNumberError,
-        dialogType: DialogType.error,
-        isRegister: false,
-      );
-      return;
-    } else {
       ref
           .read(registerViewModelProvider.notifier)
           .register(
@@ -88,10 +40,18 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
               email: _controllers['email']!.text,
               phoneNumber: _controllers['phoneNumber']!.text,
               password: _controllers['password']!.text,
-              image: ref.watch(pickedImageProvider),
+              image: ref.watch(pickedImageProvider)?.path,
             ),
           );
-    }
+  }
+
+  @override
+  void dispose() {
+    _controllers['name']!.dispose();
+    _controllers['email']!.dispose();
+    _controllers['phoneNumber']!.dispose();
+    _controllers['password']!.dispose();
+    super.dispose();
   }
 
   @override
@@ -111,7 +71,7 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
               title: 'Field To Register',
               message: 'Something went wrong please , try again',
               dialogType: DialogType.error,
-              isRegister: false,
+              openMailOption: false,
             );
             return;
           } else {
@@ -119,9 +79,9 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
               context: context,
               title: 'Register Success',
               message:
-                  'We were sent a email verification to your email, check your email',
+              'We were sent a email verification to your email, check your email',
               dialogType: DialogType.success,
-              isRegister: true,
+              openMailOption: true,
               email: userCredential.user!.email,
             );
           }
@@ -132,7 +92,7 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
             title: 'Field To Register',
             message: error.toString(),
             dialogType: DialogType.error,
-            isRegister: false,
+            openMailOption: false,
           );
           return;
         },
@@ -202,7 +162,6 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
                       isHaveSuffixIcon: true,
                     ).animate().fadeIn(duration: 1.seconds),
                     SizedBox(height: screenHeight * 0.03),
-
                     Button(
                       text: registerStatus!.isLoading
                           ? AppLocalizations.of(context)!.registering

@@ -5,15 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:personal_task/core/constants/app_colors.dart';
 import 'package:personal_task/core/constants/app_strings.dart';
 import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
-import 'package:personal_task/core/utils/validators.dart';
 import 'package:personal_task/features/auth/views/register_view.dart';
 import 'package:personal_task/features/auth/views/widgets/another_option.dart';
-import 'package:personal_task/features/auth/views/widgets/button.dart';
+import 'package:personal_task/core/shared/button/button.dart';
 import 'package:personal_task/features/auth/data/login_data.dart';
 import 'package:personal_task/features/auth/view-models/login_view_model.dart';
 import 'package:personal_task/features/auth/views/widgets/text_field.dart';
-import 'package:personal_task/features/profile/view/profile_view.dart';
-
+import 'package:personal_task/features/home/view/home_view.dart';
 import '../../../core/utils/helpers.dart';
 
 class LoginView extends ConsumerStatefulWidget {
@@ -24,42 +22,32 @@ class LoginView extends ConsumerStatefulWidget {
 }
 
 class _LoginViewState extends ConsumerState<LoginView> {
-
   final Map<String, TextEditingController> _controllers = {
     'email': TextEditingController(),
     'password': TextEditingController(),
   };
 
   void _login() {
-    final emailError = Validators.validateEmail(_controllers['email']!.text);
+    ref.read(loginViewModelProvider.notifier).signIn(
+      LoginData(
+        email: _controllers['email']!.text,
+        password: _controllers['password']!.text,
+      ),
+    );
+  }
 
-    if (emailError != null) {
-      Helpers.displayDialog(
-        context: context,
-        title: 'Invalid Email',
-        message: emailError,
-        dialogType: DialogType.error,
-        isRegister: false
-      );
-      return;
+  @override
+  void dispose() {
+    for (final c in _controllers.values) {
+      c.dispose();
     }
-    ref
-        .read(loginViewModelProvider.notifier)
-        .signIn(
-          LoginData(
-            email: _controllers['email']!.text,
-            password: _controllers['password']!.text,
-          ),
-        );
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    final double screenWidth = MediaQuery.of(context).size.width;
-
-    final double screenHeight = MediaQuery.of(context).size.height;
-
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     final loginState = ref.watch(loginViewModelProvider);
 
     ref.listen(loginViewModelProvider, (previous, next) {
@@ -68,27 +56,24 @@ class _LoginViewState extends ConsumerState<LoginView> {
           if (user != null) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => ProfileView()),
+              MaterialPageRoute(builder: (_) => const HomeView()),
             );
           }
         },
         error: (error, _) {
-          final msg = error.toString().contains("not verified")
-              ? "Your email is not verified. Please check your inbox."
-              : "Login failed, please try again.";
-
-          Helpers.displayDialog(
-            context: context,
-            title: "Login Failed",
-            message: msg,
-            dialogType:  DialogType.error,
-            isRegister: false,
-          );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Helpers.displayDialog(
+              context: context,
+              title: "Login Failed",
+              message: error.toString(),
+              dialogType: DialogType.error,
+              openMailOption: false,
+            );
+          });
         },
         loading: () {},
       );
     });
-
 
     return Scaffold(
       backgroundColor: Colors.green,
@@ -107,7 +92,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                 ),
               ).animate().shimmer(
                 color: AppColors.primary,
-                duration: 1.seconds
+                duration: 1.seconds,
               ),
               SizedBox(height: screenHeight * 0.07),
               Container(
@@ -143,12 +128,17 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     ),
                     SizedBox(height: screenHeight * 0.035),
                     Button(
-                      text: loginState.isLoading ? AppLocalizations.of(context)!.logging : AppLocalizations.of(context)!.login,
-                      onPressed: loginState.isLoading ? (){} : _login,
+                      text: loginState.isLoading
+                          ? AppLocalizations.of(context)!.logging
+                          : AppLocalizations.of(context)!.login,
+                      onPressed: loginState.isLoading ? () {} : _login,
                       state: loginState.isLoading,
-                    ).animate().moveX(begin: 500 , duration: 500.ms),
+                    ).animate().moveX(begin: 500, duration: 500.ms),
                     SizedBox(height: screenHeight * 0.01),
-                    AnotherOption(isLogin: false, page: RegisterView()),
+                    AnotherOption(
+                      isLogin: false,
+                      page: const RegisterView(),
+                    ),
                   ],
                 ),
               ),

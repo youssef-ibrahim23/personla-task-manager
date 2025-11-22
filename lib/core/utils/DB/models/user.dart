@@ -6,7 +6,7 @@ class User {
   String email;
   String phoneNumber;
   String? password;
-  XFile? image;
+  String? image;
 
   User({
     this.uid,
@@ -24,7 +24,7 @@ class User {
       'EMAIL': email,
       'PHONE_NUMBER': phoneNumber,
       'PASSWORD': password,
-      'IMAGE_PATH': image?.path,
+      'IMAGE': image,
     };
   }
 
@@ -35,11 +35,11 @@ class User {
       email: map['EMAIL'],
       phoneNumber: map['PHONE_NUMBER'],
       password: map['PASSWORD'],
-      image: map['IMAGE_PATH'] != null ? XFile(map['IMAGE_PATH']) : null,
+      image: map['IMAGE'],
     );
   }
 
   @override
   String toString() =>
-      'User(uid: $uid, name: $name, email: $email, phone: $phoneNumber, image: ${image?.path})';
+      'User(uid: $uid, name: $name, email: $email, phone: $phoneNumber, image: $image)';
 }
