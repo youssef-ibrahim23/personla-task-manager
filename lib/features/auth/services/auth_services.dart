@@ -14,10 +14,9 @@ class AuthServices {
   static Future<UserCredential?> signIn(LoginData data) async {
     try {
       final credential = await firebaseAuth.signInWithEmailAndPassword(
-        email: data.email!,
-        password: data.password!,
+        email: data.email,
+        password: data.password,
       );
-
       if (credential.user == null) return null;
 
       Helpers.saveUID(credential.user!.uid);
@@ -34,9 +33,11 @@ class AuthServices {
   static Future<UserCredential?> register(User user) async {
     try {
       final credential = await firebaseAuth.createUserWithEmailAndPassword(
-        email: user.email!,
+        email: user.email,
         password: user.password!,
       );
+
+      credential.user?.updateDisplayName(user.name);
 
       user.uid = credential.user!.uid;
 
@@ -55,6 +56,17 @@ class AuthServices {
     } catch (e) {
       print(e);
       return null;
+    }
+  }
+
+  static Future<bool> signOut() async {
+    try {
+      await firebaseAuth.signOut();
+      await Helpers.toggleLoginState();
+      return true;
+    } catch (e) {
+      print('Error signing out: $e');
+      return false;
     }
   }
 }

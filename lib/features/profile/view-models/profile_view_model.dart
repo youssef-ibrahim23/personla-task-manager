@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import '../../../core/shared/image/image_providers.dart';
 import '../../../core/utils/DB/models/user.dart';
+import '../../../core/utils/helpers.dart';
 import '../../../core/utils/validators.dart';
 import '../services/profile_services.dart';
 
@@ -34,8 +38,13 @@ class ProfileViewModel extends StateNotifier<AsyncValue<User?>> {
     }
   }
 
-  Future<void> updateProfile({required User user}) async {
+  Future<void> updateProfile({required User user , required WidgetRef ref}) async {
     state = const AsyncValue.loading();
+    final image = ref.read(profilePickedImageProvider.notifier).state == null
+        ? ref.read(profileImageProvider.notifier).state
+        : await Helpers.imageToBase64(
+      File(ref.read(profilePickedImageProvider.notifier).state!.path),
+    );
     final nameError = Validators.validateName(user.name);
     final emailError = Validators.validateEmail(user.email);
     final phoneError = Validators.validatePhoneNumber(user.phoneNumber);
@@ -53,6 +62,7 @@ class ProfileViewModel extends StateNotifier<AsyncValue<User?>> {
     }
 
     try {
+      user.image = image;
       await ProfileServices.updateProfile(user: user);
       state = AsyncValue.data(null);
     } catch (e) {

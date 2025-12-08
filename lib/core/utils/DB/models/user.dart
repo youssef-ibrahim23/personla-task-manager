@@ -1,4 +1,3 @@
-import 'package:image_picker/image_picker.dart';
 
 class User {
   String? uid;
@@ -24,7 +23,7 @@ class User {
       'EMAIL': email,
       'PHONE_NUMBER': phoneNumber,
       'PASSWORD': password,
-      'IMAGE': image,
+      'IMAGE': image ?? '',
     };
   }
 

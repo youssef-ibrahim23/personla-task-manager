@@ -11,9 +11,11 @@ import 'package:personal_task/features/auth/views/widgets/another_option.dart';
 import 'package:personal_task/core/shared/button/button.dart';
 import 'package:personal_task/core/shared/image/image_widget.dart';
 import 'package:personal_task/features/auth/views/widgets/register_header.dart';
-import 'package:personal_task/features/auth/views/widgets/text_field.dart';
+import 'package:personal_task/core/shared/text-field/text_field.dart';
 
+import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/localization/l10n/app_localizations.dart';
+import '../../../core/utils/localization/locale_provider.dart';
 
 class RegisterView extends ConsumerStatefulWidget {
   const RegisterView({super.key});
@@ -28,20 +30,12 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
     'email': TextEditingController(),
     'phoneNumber': TextEditingController(),
     'password': TextEditingController(),
+    'confirmPassword': TextEditingController(),
   };
 
-  void _register() async {
-      await ref
-          .read(registerViewModelProvider.notifier)
-          .register(
-            User(
-              name: _controllers['name']!.text,
-              email: _controllers['email']!.text,
-              phoneNumber: _controllers['phoneNumber']!.text,
-              password: _controllers['password']!.text,
-              image: ref.watch(pickedImageProvider)?.path,
-            ),
-          );
+  bool get _passwordsMatch {
+    return _controllers['password']!.text ==
+        _controllers['confirmPassword']!.text;
   }
 
   @override
@@ -50,15 +44,14 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
     _controllers['email']!.dispose();
     _controllers['phoneNumber']!.dispose();
     _controllers['password']!.dispose();
+    _controllers['confirmPassword']!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-
     final double screenHeight = MediaQuery.of(context).size.height;
-
     final registerStatus = ref.watch(registerViewModelProvider);
 
     ref.listen(registerViewModelProvider, (previous, next) {
@@ -78,7 +71,7 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
               context: context,
               title: 'Register Success',
               message:
-              'We were sent a email verification to your email, check your email',
+                  'We were sent a email verification to your email, check your email',
               dialogType: DialogType.success,
               openMailOption: true,
               email: userCredential.user!.email,
@@ -105,72 +98,150 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.12),
+              SizedBox(height: screenHeight * 0.08),
               RegisterHeader(),
-              SizedBox(height: screenHeight * 0.05),
+              SizedBox(height: screenHeight * 0.02),
               Container(
                 width: screenWidth,
-                height: screenHeight * 0.75,
+                height: screenHeight * 0.87,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
                 ),
-                child: Column(
-                  children: [
-                    SizedBox(height: screenHeight * 0.025),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        ImageWidget().animate().moveX(
-                          begin: -300,
-                          duration: 500.ms,
-                        ),
-                        SizedBox(width: screenWidth * 0.1),
-                        IconButton(
-                          onPressed: () {
-                            ref.read(pickedImageProvider.notifier).state = null;
-                          },
-                          icon: Icon(Icons.delete),
-                          color: Colors.red,
-                        ).animate().moveX(begin: 300, duration: 500.ms),
-                      ],
-                    ),
-                    SizedBox(height: screenHeight * 0.03),
-                    CustomTextField(
-                      hintText: AppLocalizations.of(context)!.name,
-                      controller: _controllers['name'],
-                      obscureText: false,
-                    ).animate().fadeIn(duration: 1.seconds),
-                    SizedBox(height: screenHeight * 0.05),
-                    CustomTextField(
-                      hintText: AppLocalizations.of(context)!.email,
-                      controller: _controllers['email'],
-                      obscureText: false,
-                    ).animate().fadeIn(duration: 1.seconds),
-                    SizedBox(height: screenHeight * 0.05),
-                    CustomTextField(
-                      hintText: AppLocalizations.of(context)!.phone_number,
-                      controller: _controllers['phoneNumber'],
-                      obscureText: false,
-                    ).animate().fadeIn(duration: 1.seconds),
-                    SizedBox(height: screenHeight * 0.05),
-                    CustomTextField(
-                      hintText: AppLocalizations.of(context)!.password,
-                      controller: _controllers['password'],
-                      obscureText: true,
-                      isHaveSuffixIcon: true,
-                    ).animate().fadeIn(duration: 1.seconds),
-                    SizedBox(height: screenHeight * 0.03),
-                    Button(
-                      text: registerStatus!.isLoading
-                          ? AppLocalizations.of(context)!.registering
-                          : AppLocalizations.of(context)!.register,
-                      onPressed: _register,
-                      state: registerStatus!.isLoading,
-                    ).animate().moveX(begin: 500, duration: 500.ms),
-                    SizedBox(height: screenHeight * 0.01),
-                    AnotherOption(isLogin: true, page: LoginView()),
-                  ],
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.025),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ImageWidget(
+                            pickedImageProvider: registerPickedImageProvider,
+                            cloudImage: null,
+                            state: false,
+                          ).animate().moveX(begin: -300, duration: 500.ms),
+                          SizedBox(width: screenWidth * 0.1),
+                          IconButton(
+                            onPressed: () {
+                              ref
+                                      .read(
+                                        registerPickedImageProvider.notifier,
+                                      )
+                                      .state =
+                                  null;
+                            },
+                            icon: Icon(Icons.delete),
+                            color: Colors.red,
+                          ).animate().moveX(begin: 300, duration: 500.ms),
+                        ],
+                      ),
+                      SizedBox(height: screenHeight * 0.04),
+                      CustomTextField(
+                        hintText: AppLocalizations.of(context)!.name,
+                        controller: _controllers['name'],
+                        obscureText: false,
+                        fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
+                      ).animate().fadeIn(duration: 1.seconds),
+                      SizedBox(height: screenHeight * 0.04),
+                      CustomTextField(
+                        hintText: AppLocalizations.of(context)!.email,
+                        controller: _controllers['email'],
+                        obscureText: false,
+                        fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
+                      ).animate().fadeIn(duration: 1.seconds),
+                      SizedBox(height: screenHeight * 0.04),
+                      CustomTextField(
+                        hintText: AppLocalizations.of(context)!.phone_number,
+                        controller: _controllers['phoneNumber'],
+                        obscureText: false,
+                        fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
+                      ).animate().fadeIn(duration: 1.seconds),
+                      SizedBox(height: screenHeight * 0.04),
+                      CustomTextField(
+                        hintText: AppLocalizations.of(context)!.password,
+                        controller: _controllers['password'],
+                        obscureText: true,
+                        isHaveSuffixIcon: true,
+                        onChanged: (_) {
+                          setState(() {});
+                        },
+                        fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
+                      ).animate().fadeIn(duration: 1.seconds),
+                      SizedBox(height: screenHeight * 0.04),
+                      CustomTextField(
+                        hintText: AppLocalizations.of(context,)!.confirm_password,
+                        controller: _controllers['confirmPassword'],
+                        obscureText: true,
+                        isHaveSuffixIcon: true,
+                        onChanged: (_) {
+                          setState(() {});
+                        },
+                        fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
+                      ).animate().fadeIn(duration: 1.seconds),
+                      SizedBox(height: screenHeight * 0.02),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: screenWidth * 0.08),
+                          Icon(
+                            _passwordsMatch ? Icons.check_circle : Icons.cancel,
+                            color: _passwordsMatch ? Colors.green : Colors.red,
+                            size: 20,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            _passwordsMatch
+                                ? "Passwords match"
+                                : "Passwords do not match",
+                            style: TextStyle(
+                              color: _passwordsMatch
+                                  ? Colors.green
+                                  : Colors.red,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: screenHeight * 0.02),
+                      Button(
+                        text: registerStatus.isLoading
+                            ? AppLocalizations.of(context)!.registering
+                            : AppLocalizations.of(context)!.register,
+                        onPressed: () async {
+                          if (!_passwordsMatch) {
+                            Helpers.displayDialog(
+                              context: context,
+                              title: 'Register Field',
+                              message: 'Password Not Match',
+                              dialogType: DialogType.error,
+                              openMailOption: false,
+                            );
+                          } else {
+                            await ref
+                                .read(registerViewModelProvider.notifier)
+                                .register(
+                                  User(
+                                    name: _controllers['name']!.text,
+                                    email: _controllers['email']!.text,
+                                    phoneNumber:
+                                        _controllers['phoneNumber']!.text,
+                                    password: _controllers['password']!.text,
+                                    image: ref
+                                        .watch(registerPickedImageProvider)
+                                        ?.path,
+                                  ),
+                                );
+                          }
+                        },
+                        state: registerStatus.isLoading,
+                        fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
+                      ).animate().moveX(begin: 500, duration: 500.ms),
+                      SizedBox(height: screenHeight * 0.01),
+                      AnotherOption(isLogin: true, page: LoginView()),
+                    ],
+                  ),
                 ),
               ),
             ],

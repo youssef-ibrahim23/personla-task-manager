@@ -9,6 +9,7 @@ class Validators {
     if(value.length < 3){
       return 'Name is Very Short';
     }
+    return null;
   }
 
   static String? validateEmail(String? value) {
@@ -32,6 +33,7 @@ class Validators {
     if(value.length != 11){
       return 'Enter a valid phone number';
     }
+    return null;
   }
 
   static String? validatePassword(String? value) {
@@ -47,6 +49,13 @@ class Validators {
       return 'Password must be at least 7 characters long,\ninclude at least 1 uppercase letter,\nand at least 3 numbers';
     }
 
+    return null;
+  }
+
+  static String? validateNotNull(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'This field is required';
+    }
     return null;
   }
 }

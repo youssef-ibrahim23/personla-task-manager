@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:personal_task/bottom_navigations.dart';
 import 'package:personal_task/core/constants/app_colors.dart';
 import 'package:personal_task/core/constants/app_strings.dart';
 import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
@@ -10,9 +11,9 @@ import 'package:personal_task/features/auth/views/widgets/another_option.dart';
 import 'package:personal_task/core/shared/button/button.dart';
 import 'package:personal_task/features/auth/data/login_data.dart';
 import 'package:personal_task/features/auth/view-models/login_view_model.dart';
-import 'package:personal_task/features/auth/views/widgets/text_field.dart';
-import 'package:personal_task/features/home/view/home_view.dart';
+import 'package:personal_task/core/shared/text-field/text_field.dart';
 import '../../../core/utils/helpers.dart';
+import '../../../core/utils/localization/locale_provider.dart';
 
 class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
@@ -26,15 +27,6 @@ class _LoginViewState extends ConsumerState<LoginView> {
     'email': TextEditingController(),
     'password': TextEditingController(),
   };
-
-  void _login() async {
-    await ref.read(loginViewModelProvider.notifier).signIn(
-      LoginData(
-        email: _controllers['email']!.text,
-        password: _controllers['password']!.text,
-      ),
-    );
-  }
 
   @override
   void dispose() {
@@ -56,7 +48,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
           if (user != null) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => const HomeView()),
+              MaterialPageRoute(builder: (_) => BottomNavigations()),
             );
           }
         },
@@ -64,7 +56,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Helpers.displayDialog(
               context: context,
-              title: "Login Failed",
+              title: AppLocalizations.of(context)!.login_failed,
               message: error.toString(),
               dialogType: DialogType.error,
               openMailOption: false,
@@ -81,14 +73,14 @@ class _LoginViewState extends ConsumerState<LoginView> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.22),
+              SizedBox(height:  ref.watch(localeProvider).languageCode == 'ar' ? screenHeight * 0.14 : screenHeight * 0.22),
               Text(
                 AppLocalizations.of(context)!.app_title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
-                  fontFamily: AppStrings.primaryFont,
-                  fontSize: 70,
+                  fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
+                  fontSize: ref.watch(localeProvider).languageCode == 'ar' ? 100 : 70,
                 ),
               ).animate().shimmer(
                 color: AppColors.primary,
@@ -110,7 +102,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 50,
-                        fontFamily: AppStrings.primaryFont,
+                        fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.02),
@@ -118,6 +110,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       hintText: AppLocalizations.of(context)!.email,
                       controller: _controllers['email'],
                       obscureText: false,
+                      fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
                     ),
                     SizedBox(height: screenHeight * 0.05),
                     CustomTextField(
@@ -125,14 +118,23 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       controller: _controllers['password'],
                       obscureText: true,
                       isHaveSuffixIcon: true,
+                      fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
                     ),
                     SizedBox(height: screenHeight * 0.035),
                     Button(
                       text: loginState.isLoading
                           ? AppLocalizations.of(context)!.logging
                           : AppLocalizations.of(context)!.login,
-                      onPressed: loginState.isLoading ? () {} : _login,
+                      onPressed: loginState.isLoading ? () {} : () async {
+                        await ref.read(loginViewModelProvider.notifier).signIn(
+                          LoginData(
+                            email: _controllers['email']!.text,
+                            password: _controllers['password']!.text,
+                          ),
+                        );
+                      },
                       state: loginState.isLoading,
+                      fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
                     ).animate().moveX(begin: 500, duration: 500.ms),
                     SizedBox(height: screenHeight * 0.01),
                     AnotherOption(

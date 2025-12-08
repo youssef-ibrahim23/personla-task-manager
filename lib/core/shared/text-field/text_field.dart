@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:personal_task/core/constants/app_colors.dart';
+import 'package:personal_task/core/constants/app_strings.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CustomTextField extends StatefulWidget {
   final String hintText;
   final TextEditingController? controller;
-  final bool obscureText;
+  bool obscureText;
   final bool isHaveSuffixIcon;
   final TextInputType? keyboardType;
-  final bool? profileState;
+  final bool profileState;
+  final ValueChanged<String>? onChanged;
+  final String fontFamily;
 
-  const CustomTextField({
+   CustomTextField({
     super.key,
     required this.hintText,
-    this.controller,
+    required this.controller,
     this.obscureText = false,
-    this.keyboardType,
+    this.keyboardType = TextInputType.text,
     this.isHaveSuffixIcon = false,
     this.profileState = false,
+    this.onChanged,
+     required this.fontFamily,
   });
 
   @override
@@ -25,12 +30,10 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  late bool _isObscure;
 
   @override
   void initState() {
     super.initState();
-    _isObscure = widget.obscureText;
   }
 
   @override
@@ -38,27 +41,33 @@ class _CustomTextFieldState extends State<CustomTextField> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return widget.profileState!
-        ? Shimmer.fromColors(
-      baseColor: AppColors.primary,
-      highlightColor: Colors.white,
-      child: Container(
-        width: screenWidth * 0.8,
-        height: screenHeight * 0.06,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+    if (widget.profileState) {
+      return Shimmer.fromColors(
+        baseColor: AppColors.primary,
+        highlightColor: Colors.white,
+        child: Container(
+          width: screenWidth * 0.8,
+          height: screenHeight * 0.06,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
-      ),
-    )
-        : SizedBox(
+      );
+    }
+
+    return SizedBox(
       width: screenWidth * 0.9,
       height: screenHeight * 0.06,
       child: TextField(
         controller: widget.controller,
-        obscureText: _isObscure,
+        obscureText: widget.obscureText,
         keyboardType: widget.keyboardType ?? TextInputType.text,
+        onChanged: widget.onChanged,
         decoration: InputDecoration(
+          labelText: widget.hintText,
+          labelStyle: TextStyle(letterSpacing: 1 , color: Colors.black , fontSize: 15 , fontFamily: widget.fontFamily),
+
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(width: 2, color: Colors.black),
@@ -67,18 +76,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(width: 2, color: Colors.black),
           ),
-          labelText: widget.hintText,
-          labelStyle: const TextStyle(color: Colors.black),
+
           suffixIcon: widget.isHaveSuffixIcon
               ? IconButton(
             icon: Icon(
-              _isObscure
-                  ? Icons.remove_red_eye_outlined
-                  : Icons.remove_red_eye,
+              widget.obscureText
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility,
             ),
             onPressed: () {
               setState(() {
-                _isObscure = !_isObscure;
+                widget.obscureText = !widget.obscureText;
               });
             },
           )

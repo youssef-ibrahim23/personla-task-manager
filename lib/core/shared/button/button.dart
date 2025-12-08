@@ -6,12 +6,14 @@ class Button extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
   final bool state;
+  final String fontFamily;
 
   const Button({
     super.key,
     required this.text,
     required this.onPressed,
     required this.state,
+    required this.fontFamily,
   });
 
   @override
@@ -29,10 +31,10 @@ class Button extends StatelessWidget {
           onPressed: onPressed,
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 20,
-              fontFamily: 'Luckiest Guy',
+              fontFamily: fontFamily,
             ),
           ),
         ),

@@ -2,25 +2,28 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:personal_task/core/constants/app_colors.dart';
-import 'package:personal_task/features/profile/view-models/profile_view_model.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'image_providers.dart';
+import '../../constants/app_colors.dart';
+import 'image_services.dart';
 
 class ImageWidget extends ConsumerWidget {
+  final StateProvider<XFile?> pickedImageProvider;
+  final String? cloudImage;
+  final bool state;
 
-  const ImageWidget({super.key});
+  const ImageWidget({
+    super.key,
+    required this.pickedImageProvider,
+    this.cloudImage,
+    required this.state,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    final XFile? pickedImage = ref.watch(pickedImageProvider);
-
-    final String? cloudImage = ref.watch(profileImageProvider);
-
-    final double screenHeight = MediaQuery.of(context).size.height;
+    final pickedImage = ref.watch(pickedImageProvider);
 
     Widget displayedImage;
 
@@ -31,83 +34,69 @@ class ImageWidget extends ConsumerWidget {
         height: 100,
         fit: BoxFit.cover,
       );
-    } else if (cloudImage != null && cloudImage.isNotEmpty) {
+    } else if (cloudImage != null && cloudImage!.isNotEmpty) {
       try {
         displayedImage = Image.memory(
           base64Decode(
-            cloudImage.startsWith('data:image')
-                ? cloudImage.split(',').last
-                : cloudImage,
+            cloudImage!.contains(',')
+                ? cloudImage!.split(',').last
+                : cloudImage!,
           ),
           width: 100,
           height: 100,
           fit: BoxFit.cover,
         );
-      } catch (e) {
-        displayedImage = Image.asset(
-          "assets/profile-placeholder.jpeg",
-          width: 100,
-          height: 100,
-          fit: BoxFit.cover,
-        );
+      } catch (_) {
+        displayedImage = Image.asset("assets/profile-placeholder.jpeg");
       }
     } else {
-      displayedImage = Image.asset(
-        "assets/profile-placeholder.jpeg",
-        width: 100,
-        height: 100,
-        fit: BoxFit.cover,
-      );
+      displayedImage = Image.asset("assets/profile-placeholder.jpeg");
     }
 
-    Future<void> pickImage() async {
-      final ImagePicker picker = ImagePicker();
-      final source = await showDialog<ImageSource>(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text('Select Image Source'),
-          content: const Text('Where do you want to pick the image from?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, ImageSource.camera),
-              child: const Text('Camera'),
+    return state
+        ? Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey.withOpacity(0.3), width: 2),
             ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, ImageSource.gallery),
-              child: const Text('Gallery'),
+            child: Shimmer.fromColors(
+              baseColor: AppColors.primary,
+              highlightColor: Colors.white,
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ],
-        ),
-      );
-
-      if (source != null) {
-        final XFile? image = await picker.pickImage(source: source);
-        if (image != null) {
-          ref.read(pickedImageProvider.notifier).state = image;
-        }
-      }
-    }
-
-    return ref.watch(profileViewModelProvider).isLoading
-        ? Shimmer.fromColors(
-      baseColor: AppColors.primary,
-      highlightColor: Colors.white,
-      child: CircleAvatar(
-        radius: screenHeight * 0.06,
-        backgroundColor: Colors.white,
-      ),
-    )
+          )
         : InkWell(
-      onTap: pickImage,
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.grey, width: 2),
-        ),
-        child: ClipOval(child: displayedImage),
-      ),
-    );
+            onTap: () => ImageServices.pickAndSetImage(
+              context,
+              pickedImageProvider,
+              ref,
+            ),
+            borderRadius: BorderRadius.circular(50),
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipOval(child: displayedImage),
+            ),
+          );
   }
 }

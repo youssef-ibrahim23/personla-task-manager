@@ -67,16 +67,23 @@ class FireStoreServices {
     print("[FireStore] Task data: ${task.toMap()}");
 
     try {
-      await firebaseFirestore.collection('tasks').doc(task.id.toString()).set({
-        'title': task.title,
-        'description': task.description,
-        'Priority': task.priority,
-        'status': task.status,
-        'createdAt': task.createdAt,
-        'endDate': task.dueDate,
-        'isShared': task.isShared,
-        'ownerId': task.ownerId,
-      });
+      await firebaseFirestore
+          .collection('tasks')
+          .doc(task.id.toString())
+          .set(task.toMap());
+
+      if (task.attachments != null && task.attachments!.isNotEmpty) {
+        for (Attachment attachment in task.attachments!) {
+          attachment.taskId = task.id;
+
+          await firebaseFirestore
+              .collection('tasks')
+              .doc(task.id.toString())
+              .collection('attachments')
+              .doc(attachment.id.toString())
+              .set(await attachment.toMap());
+        }
+      }
 
       print("[FireStore] uploadTask(): success (ID=${task.id})");
     } catch (e) {
@@ -89,23 +96,116 @@ class FireStoreServices {
     print("[FireStore] Task ID: ${task.id}");
 
     try {
+      print(task.id);
       await firebaseFirestore
           .collection('tasks')
           .doc(task.id.toString())
-          .update({
-            'title': task.title,
-            'description': task.description,
-            'Priority': task.priority,
-            'status': task.status,
-            'createdAt': task.createdAt,
-            'endDate': task.dueDate,
-            'isShared': task.isShared,
-            'ownerId': task.ownerId,
-          });
+          .update(task.toMap());
 
-      print("[FireStore] updateTask(): success");
+      if (task.attachments != null && task.attachments!.isNotEmpty) {
+        for (Attachment attachment in task.attachments!) {
+          await firebaseFirestore
+              .collection('tasks')
+              .doc(task.id.toString())
+              .collection('attachments')
+              .doc(attachment.id.toString())
+              .set(await attachment.toMap());
+          print('[FireStore] update attachments');
+        }
+
+        print("[FireStore] updateTask(): success");
+      }
     } catch (e) {
       print("[FireStore] updateTask(): error -> $e");
+    }
+  }
+
+  Future<List<Task>?> getTasksByOwner({required String uid}) async {
+    print("[FireStore] getTasksByOwner(): get tasks by owner (ID=$uid)");
+
+    try {
+      QuerySnapshot snapshot = await firebaseFirestore
+          .collection('tasks')
+          .where('OWNER_ID', isEqualTo: uid)
+          .get();
+
+      List<Task> tasks = [];
+
+      for (var doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        Task task = Task.fromMap(data);
+
+        QuerySnapshot attachmentSnapshot = await firebaseFirestore
+            .collection('tasks')
+            .doc(doc.id)
+            .collection('attachments')
+            .get();
+
+        List<Attachment> attachments = attachmentSnapshot.docs
+            .map((a) => Attachment.fromMap(a.data() as Map<String, dynamic>))
+            .toList();
+
+        task.attachments = attachments;
+
+        tasks.add(task);
+      }
+
+      print(
+        '[FireStore] getTasksByOwner(): success, found ${tasks.length} tasks',
+      );
+      print(tasks);
+      return tasks;
+    } catch (e) {
+      print('[FireStore] getTasksByOwner(): error: $e');
+      return null;
+    }
+  }
+
+  Future<List<Task>?> getPublicTasks() async {
+    print('[FireStore] getPublicTasks: work');
+
+    try {
+      QuerySnapshot snapshot = await firebaseFirestore
+          .collection('tasks')
+          .where('IS_SHARED', isNotEqualTo: 0)
+          .get();
+
+      List<Task> tasks = [];
+
+      for (var doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final taskId = doc.id;
+
+        List<Attachment> attachments = [];
+        try {
+          final attSnap = await firebaseFirestore
+              .collection('tasks')
+              .doc(taskId)
+              .collection('attachments')
+              .get();
+
+          attachments = attSnap.docs
+              .map(
+                (attDoc) =>
+                    Attachment.fromMap(attDoc.data()),
+              )
+              .toList();
+          print(attachments.first);
+        } catch (e) {
+          print('[FireStore] attachments error for task $taskId: $e');
+        }
+
+        final task = Task.fromMap(data);
+        task.attachments = attachments;
+        print(task);
+        tasks.add(task);
+      }
+
+      print('[FireStore] getPublicTasks: success , ${tasks.length}');
+      return tasks;
+    } catch (e) {
+      print("[Firestore] getPublicTasks error: $e");
+      return null;
     }
   }
 
@@ -154,7 +254,7 @@ class FireStoreServices {
       await firebaseFirestore
           .collection('attachments')
           .doc(attachment.id.toString())
-          .set({'taskId': attachment.taskId, 'filePath': attachment.filePath});
+          .set(await attachment.toMap());
 
       print("[FireStore] uploadAttachment(): success (ID=${attachment.id})");
     } catch (e) {

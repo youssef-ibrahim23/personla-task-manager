@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:personal_task/features/splash/view/splash_view.dart';
+import 'package:personal_task/splash_view.dart';
 
 import 'core/constants/app_themes.dart';
 import 'core/utils/localization/l10n/app_localizations.dart';
@@ -19,8 +19,8 @@ class App extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: 'Personal Task',
       themeMode: theme,
-      theme: AppThemes.lightTheme,
-      darkTheme: AppThemes.darkTheme,
+      theme: AppThemes(locale).lightTheme,
+      darkTheme: AppThemes(locale).darkTheme,
       locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

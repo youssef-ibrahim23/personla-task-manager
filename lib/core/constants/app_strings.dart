@@ -1,7 +1,7 @@
 class AppStrings {
   // Fonts //
   static const String primaryFont = 'Luckiest Guy';
-  static const String secondaryFont = 'Roboto';
+  static const String primaryArabicFont = 'Rakkas-Regular';
 
   // App Info //
   static const String appName = 'Personal Task';
@@ -24,7 +24,6 @@ class AppStrings {
   // Storage Keys (if you use shared prefs, hive, etc.) //
   static const String prefLanguage = 'app_language';
   static const String prefThemeMode = 'theme_mode';
-  static const String prefUserToken = 'user_token';
 
   // General App Constants //
   static const String defaultLocale = 'en';
