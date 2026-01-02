@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:personal_task/core/constants/app_colors.dart';
+import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 import 'package:personal_task/features/home/view/home_view.dart';
 import 'package:personal_task/features/profile/views/profile_view.dart';
 
 import 'features/more/view/more_view.dart';
 
-class BottomNavigations extends StatefulWidget {
-  const BottomNavigations({super.key});
+class BottomNavigation extends StatefulWidget {
+  const BottomNavigation({super.key});
+
 
   @override
-  _BottomNavigationsState createState() => _BottomNavigationsState();
+  State<StatefulWidget> createState() => _BottomNavigationState();
 }
 
-class _BottomNavigationsState extends State<BottomNavigations> {
+class _BottomNavigationState extends State<BottomNavigation> {
   int _currentIndex = 1;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
@@ -33,15 +34,15 @@ class _BottomNavigationsState extends State<BottomNavigations> {
       index: _currentIndex,
       height: 65.0,
       items: <Widget>[
-        _buildNavItem(Icons.more_horiz, 'More', 0),
-        _buildNavItem(Icons.home, 'Home', 1),
-        _buildNavItem(Icons.person, 'Profile', 2),
+        _buildNavItem(Icons.more_horiz, AppLocalizations.of(context)!.more, 0),
+        _buildNavItem(Icons.home, AppLocalizations.of(context)!.home, 1),
+        _buildNavItem(Icons.person, AppLocalizations.of(context)!.profile, 2),
       ],
-      color: Colors.white,
-      buttonBackgroundColor: AppColors.primary,
+      color: Theme.of(context).colorScheme.primaryContainer,
+      buttonBackgroundColor: Theme.of(context).primaryColor,
       backgroundColor: Colors.transparent,
       animationCurve: Curves.easeInOut,
-      animationDuration: const Duration(milliseconds: 700),
+      animationDuration: const Duration(milliseconds: 500),
       onTap: (index) {
         setState(() {
           _currentIndex = index;
@@ -57,14 +58,14 @@ class _BottomNavigationsState extends State<BottomNavigations> {
         Icon(
           icon,
           size: 24,
-          color: _currentIndex == index ? Colors.white : Colors.grey[700],
+          color: _currentIndex == index ? Colors.white : Theme.of(context).colorScheme.surface,
         ),
         const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
             fontSize: 10,
-            color: _currentIndex == index ? Colors.white : Colors.grey[700],
+            color: _currentIndex == index ? Colors.white : Theme.of(context).colorScheme.surface,
           ),
         ),
       ],

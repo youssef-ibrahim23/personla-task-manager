@@ -62,8 +62,7 @@ import 'app_localizations_en.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ar'),
-    Locale('en'),
+    Locale('en')
   ];
 
   /// No description provided for @app_title.
@@ -151,6 +148,112 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create Your Account'**
   String get create_your_account;
+
+  /// No description provided for @select_image_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Image Source'**
+  String get select_image_source;
+
+  /// No description provided for @where_do_you_want_to_pick_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Where do you want to pick the image from?'**
+  String get where_do_you_want_to_pick_image;
+
+  /// No description provided for @gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
+
+  /// No description provided for @camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get camera;
+
+  /// No description provided for @open_mail.
+  ///
+  /// In en, this message translates to:
+  /// **'Open mail'**
+  String get open_mail;
+
+  /// No description provided for @name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Name required'**
+  String get name_required;
+
+  /// No description provided for @phone_number_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number required'**
+  String get phone_number_required;
+
+  /// No description provided for @email_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Is Required'**
+  String get email_required;
+
+  /// No description provided for @password_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Password Is Required'**
+  String get password_required;
+
+  /// No description provided for @please_enter_valid_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Please Enter Valid Email'**
+  String get please_enter_valid_email;
+
+  /// No description provided for @connection_Error_no_internet.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Error, No Internet'**
+  String get connection_Error_no_internet;
+
+  /// No description provided for @this_user_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'This user not found'**
+  String get this_user_not_found;
+
+  /// No description provided for @email_is_not_verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is not verified'**
+  String get email_is_not_verified;
+
+  /// No description provided for @pending_tasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending_tasks;
+
+  String get you_can_not_edit_on_task;
+
+  String get week_password;
+
+  /// No description provided for @no_tasks_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks found'**
+  String get no_tasks_found;
+
+  /// No description provided for @add_images.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Images'**
+  String get add_images;
+
+  /// No description provided for @no_images_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'No Images Selected'**
+  String get no_images_selected;
 
   /// No description provided for @name.
   ///
@@ -290,6 +393,30 @@ abstract class AppLocalizations {
   /// **'Add Reminder'**
   String get add_reminder;
 
+  /// No description provided for @before_2_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Before 2 minutes'**
+  String get before_2_minutes;
+
+  /// No description provided for @before_5_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Before 5 minutes'**
+  String get before_5_minutes;
+
+  /// No description provided for @before_10_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Before 10 minutes'**
+  String get before_10_minutes;
+
+  /// No description provided for @before_20_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Before 20 minutes'**
+  String get before_20_minutes;
+
   /// No description provided for @enter_task_title.
   ///
   /// In en, this message translates to:
@@ -359,7 +486,7 @@ abstract class AppLocalizations {
   /// No description provided for @public_tasks.
   ///
   /// In en, this message translates to:
-  /// **'Public Tasks'**
+  /// **'Public'**
   String get public_tasks;
 
   /// No description provided for @see_all.
@@ -494,6 +621,18 @@ abstract class AppLocalizations {
   /// **'English'**
   String get english;
 
+  /// No description provided for @settings_and_preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings & Preferences'**
+  String get settings_and_preferences;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:
@@ -511,10 +650,423 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to logout?'**
   String get logout_confirmation;
+
+  /// No description provided for @weather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get weather;
+
+  /// No description provided for @feels_like.
+  ///
+  /// In en, this message translates to:
+  /// **'Feels Like'**
+  String get feels_like;
+
+  /// No description provided for @visibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Visibility'**
+  String get visibility;
+
+  /// No description provided for @pressure.
+  ///
+  /// In en, this message translates to:
+  /// **'Pressure'**
+  String get pressure;
+
+  /// No description provided for @cloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud'**
+  String get cloud;
+
+  /// No description provided for @precipitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Precipitation'**
+  String get precipitation;
+
+  /// No description provided for @dew_point.
+  ///
+  /// In en, this message translates to:
+  /// **'Dew Point'**
+  String get dew_point;
+
+  /// No description provided for @gust.
+  ///
+  /// In en, this message translates to:
+  /// **'Gust'**
+  String get gust;
+
+  /// No description provided for @uv_index.
+  ///
+  /// In en, this message translates to:
+  /// **'UV Index'**
+  String get uv_index;
+
+  /// No description provided for @low_uv.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get low_uv;
+
+  /// No description provided for @moderate_uv.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate'**
+  String get moderate_uv;
+
+  /// No description provided for @high_uv.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get high_uv;
+
+  /// No description provided for @very_high_uv.
+  ///
+  /// In en, this message translates to:
+  /// **'Very High'**
+  String get very_high_uv;
+
+  /// No description provided for @extreme_uv.
+  ///
+  /// In en, this message translates to:
+  /// **'Extreme'**
+  String get extreme_uv;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
+  /// No description provided for @weather_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather Details'**
+  String get weather_details;
+
+  /// No description provided for @current_weather.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Weather'**
+  String get current_weather;
+
+  /// No description provided for @temperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get temperature;
+
+  /// No description provided for @weather_condition.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather Condition'**
+  String get weather_condition;
+
+  /// No description provided for @additional_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Info'**
+  String get additional_info;
+
+  /// No description provided for @weather_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather Data Error'**
+  String get weather_error;
+
+  /// No description provided for @fetching_weather.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching weather data...'**
+  String get fetching_weather;
+
+  /// No description provided for @last_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated'**
+  String get last_updated;
+
+  /// No description provided for @sunrise.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunrise'**
+  String get sunrise;
+
+  /// No description provided for @sunset.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunset'**
+  String get sunset;
+
+  /// No description provided for @chance_of_rain.
+  ///
+  /// In en, this message translates to:
+  /// **'Chance of Rain'**
+  String get chance_of_rain;
+
+  /// No description provided for @wind_direction.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind Direction'**
+  String get wind_direction;
+
+  /// No description provided for @air_quality.
+  ///
+  /// In en, this message translates to:
+  /// **'Air Quality'**
+  String get air_quality;
+
+  /// No description provided for @good.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get good;
+
+  /// No description provided for @moderate.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate'**
+  String get moderate;
+
+  /// No description provided for @unhealthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Unhealthy'**
+  String get unhealthy;
+
+  /// No description provided for @hazardous.
+  ///
+  /// In en, this message translates to:
+  /// **'Hazardous'**
+  String get hazardous;
+
+  /// No description provided for @weather_forecast.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather Forecast'**
+  String get weather_forecast;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @tomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get tomorrow;
+
+  /// No description provided for @this_week.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get this_week;
+
+  /// No description provided for @hourly_forecast.
+  ///
+  /// In en, this message translates to:
+  /// **'Hourly Forecast'**
+  String get hourly_forecast;
+
+  /// No description provided for @daily_forecast.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Forecast'**
+  String get daily_forecast;
+
+  /// No description provided for @max_temp.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Temp'**
+  String get max_temp;
+
+  /// No description provided for @min_temp.
+  ///
+  /// In en, this message translates to:
+  /// **'Min Temp'**
+  String get min_temp;
+
+  /// No description provided for @feels_like_temp.
+  ///
+  /// In en, this message translates to:
+  /// **'Feels like {temp}°C'**
+  String feels_like_temp(String temp);
+
+  /// No description provided for @weather_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather in {city}'**
+  String weather_in(String city);
+
+  /// No description provided for @save_task_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed To Save Task'**
+  String get save_task_failed;
+
+  /// No description provided for @tasks_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} tasks'**
+  String tasks_count(int count);
+
+  /// No description provided for @completed_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} completed'**
+  String completed_count(int count);
+
+  /// No description provided for @no_tasks.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks'**
+  String get no_tasks;
+
+  /// No description provided for @swipe_to_delete_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe left on any task to delete it'**
+  String get swipe_to_delete_hint;
+
+  /// No description provided for @swipe_to_delete_hint_owner.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe left on your tasks to delete them'**
+  String get swipe_to_delete_hint_owner;
+
+  /// No description provided for @task_deleted_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Task deleted successfully'**
+  String get task_deleted_successfully;
+
+  /// No description provided for @no_tasks_in_category.
+  ///
+  /// In en, this message translates to:
+  /// **'It looks like you don't have any tasks in this category yet.'**
+  String get no_tasks_in_category;
+
+  /// No description provided for @create_new_task.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Task'**
+  String get create_new_task;
+
+  /// No description provided for @stats.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get stats;
+
+  /// No description provided for @task_statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Task Statistics'**
+  String get task_statistics;
+
+  /// No description provided for @total_tasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Tasks'**
+  String get total_tasks;
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @high_priority.
+  ///
+  /// In en, this message translates to:
+  /// **'High Priority'**
+  String get high_priority;
+
+  /// No description provided for @completion_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Completion Progress'**
+  String get completion_progress;
+
+  /// No description provided for @delete_task_confirmation_with_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete "{title}"?'**
+  String delete_task_confirmation_with_title(String title);
+
+  /// No description provided for @weather_data_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather data unavailable'**
+  String get weather_data_unavailable;
+
+  /// No description provided for @unknown_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Location'**
+  String get unknown_location;
+
+  /// No description provided for @start_by_creating_task.
+  ///
+  /// In en, this message translates to:
+  /// **'Start by creating a new task'**
+  String get start_by_creating_task;
+
+  /// No description provided for @not_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Completed'**
+  String get not_completed;
+
+  /// No description provided for @overview_of_your_tasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview of your tasks'**
+  String get overview_of_your_tasks;
+
+  /// No description provided for @basic_information.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Information'**
+  String get basic_information;
+
+  /// No description provided for @category_priority.
+  ///
+  /// In en, this message translates to:
+  /// **'Category & Priority'**
+  String get category_priority;
+
+  /// No description provided for @date_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & Time'**
+  String get date_time;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -523,26 +1075,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['ar', 'en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'ar':
-      return AppLocalizationsAr();
-    case 'en':
-      return AppLocalizationsEn();
+    case 'ar': return AppLocalizationsAr();
+    case 'en': return AppLocalizationsEn();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

@@ -52,9 +52,18 @@ class Validators {
     return null;
   }
 
-  static String? validateNotNull(String? value) {
+  static String? validateNotNull(String? value , String action) {
     if (value == null || value.trim().isEmpty) {
-      return 'This field is required';
+      return 'Please $action';
+    }
+    return null;
+  }
+
+  static String? validateStartDateIsBeforeEndDate(DateTime? startDate, DateTime? endDate) {
+    if (startDate != null && endDate != null) {
+      if (startDate.isAfter(endDate)) {
+        return 'Start date must be before end date';
+      }
     }
     return null;
   }

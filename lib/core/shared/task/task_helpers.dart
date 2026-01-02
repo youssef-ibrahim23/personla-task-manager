@@ -30,8 +30,6 @@ class TaskHelpers {
     }
   }
 
-  /// Formats a DateTime object to a readable string
-  /// Example output: 05/12/2025 – 16:45
   static String formatDate(DateTime dateTime, {String pattern = 'dd/MM/yyyy – HH:mm'}) {
     return DateFormat(pattern).format(dateTime);
   }

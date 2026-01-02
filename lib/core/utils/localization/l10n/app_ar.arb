@@ -9,6 +9,19 @@
   "registering": "يتم التسجيل",
   "not_have_account": "لا تمتلك حساب؟",
   "create_your_account": "انشئ حسابك",
+  "select_image_source": "اختر مصدر الصورة",
+  "where_do_you_want_to_pick_image": "من اين انت تريد ان تختار الصورة؟",
+  "gallery": "المعرض",
+  "email_required": "البريد الاكتروني مطلوب",
+  "password_required": "الباسورد مطلوب",
+  "please_enter_valid_email": "من فضلك ادخل ايميل صالح",
+  "connection_Error_no_internet" : "خطاء في الاتصال,لا يوجد انترنت",
+  "this_user_not_found": "هذا المستخدم غير موجود",
+  "email_is_not_verified" : "الايميل غير متحقق",
+  "pending_tasks": "المنتظرة",
+  "no_tasks_found": "لا يوجد مهام",
+  "add_images" : "اضف صور",
+  "no_images_selected": "لا يوجد صور",
   "name": "الاسم",
   "phone_number": "رقم الهاتف",
   "already_have_account": "!بالفعل لديك حساب",
@@ -27,11 +40,18 @@
   "change_password": "تغيير كلمة المرور",
   "save_changes": "حفظ التغييرات",
   "error": "خطأ",
+  "open_mail": "فتح البريد الالكتروني",
+  "name_required":"الاسم مطلوب",
+  "phone_number_required":"رقم الهاتف مطلوب",
   "reset_password_email_sent": "تم إرسال بريد إعادة تعيين كلمة المرور",
   "reset_password_email_message": "أرسلنا رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني، يرجى التحقق من بريدك",
   "task_details": "تفاصيل المهمة",
   "add_task": "إضافة مهمة",
   "add_reminder": "إضافة تذكير",
+  "before_2_minutes": "قبل دقيقتين",
+  "before_5_minutes": "قبل 5 دقائق",
+  "before_10_minutes": "قبل 10 دقائق",
+  "before_20_minutes": "قبل 20 دقيقة",
   "enter_task_title": "أدخل عنوان المهمة",
   "enter_task_description": "أدخل وصف المهمة",
   "select_task_category": "اختر فئة المهمة",
@@ -50,7 +70,7 @@
   },
   "save_task": "حفظ المهمة",
   "my_tasks": "مهامي",
-  "public_tasks": "المهام العامة",
+  "public_tasks": "العامة",
   "see_all": "عرض الكل",
   "no_internet_connection": "لا يوجد اتصال بالإنترنت",
   "humidity": "الرطوبة",
@@ -73,7 +93,114 @@
   "change_language": "تغيير اللغة",
   "arabic": "العربية",
   "english": "الإنجليزية",
+  "settings_and_preferences": "الإعدادات والتفضيلات",
+  "account": "الحساب",
   "logout": "تسجيل الخروج",
   "logout_failed": "فشل تسجيل الخروج. يرجى المحاولة مرة أخرى.",
-  "logout_confirmation": "هل أنت متأكد أنك تريد تسجيل الخروج؟"
+  "logout_confirmation": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "weather": "الطقس",
+  "feels_like": "يبدو أنه",
+  "visibility": "الرؤية",
+  "pressure": "الضغط",
+  "cloud": "الغيوم",
+  "precipitation": "هطول الأمطار",
+  "dew_point": "نقطة الندى",
+  "gust": "هبوب الرياح",
+  "uv_index": "مؤشر الأشعة فوق البنفسجية",
+  "low_uv": "منخفض",
+  "moderate_uv": "معتدل",
+  "high_uv": "عالي",
+  "very_high_uv": "عالي جداً",
+  "extreme_uv": "شديد",
+  "retry": "إعادة المحاولة",
+  "refresh": "تحديث",
+  "weather_details": "تفاصيل الطقس",
+  "current_weather": "الطقس الحالي",
+  "temperature": "درجة الحرارة",
+  "weather_condition": "حالة الطقس",
+  "additional_info": "معلومات إضافية",
+  "weather_error": "خطأ في بيانات الطقس",
+  "fetching_weather": "جاري جلب بيانات الطقس...",
+  "last_updated": "آخر تحديث",
+  "sunrise": "شروق الشمس",
+  "sunset": "غروب الشمس",
+  "chance_of_rain": "احتمالية هطول الأمطار",
+  "wind_direction": "اتجاه الرياح",
+  "air_quality": "جودة الهواء",
+  "good": "جيد",
+  "moderate": "معتدل",
+  "unhealthy": "غير صحي",
+  "hazardous": "خطير",
+  "weather_forecast": "توقعات الطقس",
+  "today": "اليوم",
+  "tomorrow": "غداً",
+  "this_week": "هذا الأسبوع",
+  "hourly_forecast": "التنبؤ بالساعة",
+  "daily_forecast": "التنبؤ اليومي",
+  "max_temp": "الحد الأقصى",
+  "min_temp": "الحد الأدنى",
+  "feels_like_temp": "يبدو أنه {temp}°م",
+  "@feels_like_temp": {
+    "placeholders": {
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "weather_in": "الطقس في {city}",
+  "@weather_in": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "camera": "الكاميرا",
+  "save_task_failed": "فشل حفظ المهمة",
+  "tasks_count": "{count} مهمة",
+  "@tasks_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "completed_count": "{count} مكتملة",
+  "@completed_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "no_tasks": "لا توجد مهام",
+  "swipe_to_delete_hint": "اسحب يساراً على أي مهمة لحذفها",
+  "swipe_to_delete_hint_owner": "اسحب يميناً على مهامك لحذفها",
+  "task_deleted_successfully": "تم حذف المهمة بنجاح",
+  "no_tasks_in_category": "يبدو أنه ليس لديك أي مهام في هذه الفئة بعد.",
+  "create_new_task": "إنشاء مهمة جديدة",
+  "stats": "الإحصائيات",
+  "task_statistics": "إحصائيات المهام",
+  "total_tasks": "إجمالي المهام",
+  "completed": "مكتملة",
+  "pending": "قيد الانتظار",
+  "high_priority": "أولوية عالية",
+  "completion_progress": "تقدم الإنجاز",
+  "delete_task_confirmation_with_title": "هل أنت متأكد أنك تريد حذف \"{title}\"؟",
+  "@delete_task_confirmation_with_title": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "weather_data_unavailable": "بيانات الطقس غير متاحة",
+  "unknown_location": "موقع غير معروف",
+  "start_by_creating_task": "ابدأ بإنشاء مهمة جديدة",
+  "not_completed": "غير مكتملة",
+  "overview_of_your_tasks": "نظرة عامة على مهامك",
+  "basic_information": "المعلومات الأساسية",
+  "category_priority": "الفئة والأولوية",
+  "date_time": "التاريخ والوقت",
+  "settings": "الإعدادات"
 }

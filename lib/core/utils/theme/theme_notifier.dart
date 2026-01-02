@@ -9,10 +9,7 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
     _loadTheme();
   }
 
-  bool _isLoading = false;
-
   Future<void> _loadTheme() async {
-    _isLoading = true;
     try {
       final prefs = await SharedPreferences.getInstance();
       final themeString = prefs.getString(AppStrings.prefThemeMode);
@@ -25,13 +22,10 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
       }
     } catch (e) {
       print('Error loading theme: $e');
-    } finally {
-      _isLoading = false;
     }
   }
 
   Future<void> _saveTheme(ThemeMode mode) async {
-    if (_isLoading) return; // Don't save during initial load
     try {
       final prefs = await SharedPreferences.getInstance();
       final themeString = mode == ThemeMode.dark ? 'dark' : 'light';
@@ -47,11 +41,6 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
     _saveTheme(newMode);
   }
 
-  void setTheme(ThemeMode mode) {
-    state = mode;
-    _saveTheme(mode);
-  }
-
   void setThemeFromString(String themeString) {
     if (themeString.toLowerCase() == 'dark') {
       state = ThemeMode.dark;
@@ -60,10 +49,4 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
     }
     _saveTheme(state);
   }
-
-  String getCurrentThemeString() {
-    return state == ThemeMode.dark ? 'Dark' : 'Light';
-  }
-
-  bool get isDarkMode => state == ThemeMode.dark;
 }

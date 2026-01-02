@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../constants/app_colors.dart';
 import 'image_services.dart';
 
 class ImageWidget extends ConsumerWidget {
@@ -62,7 +61,7 @@ class ImageWidget extends ConsumerWidget {
               border: Border.all(color: Colors.grey.withOpacity(0.3), width: 2),
             ),
             child: Shimmer.fromColors(
-              baseColor: AppColors.primary,
+              baseColor: Theme.of(context).primaryColor,
               highlightColor: Colors.white,
               child: Container(
                 width: double.infinity,

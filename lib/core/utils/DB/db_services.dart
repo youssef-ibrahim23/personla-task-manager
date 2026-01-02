@@ -60,7 +60,6 @@ class DBServices {
         DESCRIPTION TEXT,
         CATEGORY TEXT CHECK (CATEGORY IN ('Work','Study','Personal')),
         PRIORITY TEXT NOT NULL CHECK (PRIORITY IN ('Low', 'Medium', 'High')),
-        STATUS TEXT NOT NULL CHECK (STATUS IN ('In Progress', 'Completed')) DEFAULT 'In Progress',
         START_DATE TEXT,
         END_DATE TEXT,
         REMINDER_DATE TEXT,
@@ -171,26 +170,15 @@ class DBServices {
     );
   }
 
-  static Future<int> updateTaskStatus(String taskId, String status) async {
-    final db = await DBServices().database;
-    return await db.update(
-      'TASKS',
-      {'STATUS': status},
-      where: 'ID = ?',
-      whereArgs: [taskId],
-    );
-  }
-
   static Future<int> deleteTask(int taskId) async {
     final db = await DBServices().database;
-    return await db.delete(
-      'TASKS',
-      where: 'ID = ?',
-      whereArgs: [taskId],
-    );
+    return await db.delete('TASKS', where: 'ID = ?', whereArgs: [taskId]);
   }
 
-  static Future<int> toggleTaskIsDeleted({required int taskId, required int isDeleted}) async {
+  static Future<int> toggleTaskIsDeleted({
+    required int taskId,
+    required int isDeleted,
+  }) async {
     final db = await DBServices().database;
     return await db.update(
       'TASKS',
@@ -200,7 +188,10 @@ class DBServices {
     );
   }
 
-  static Future<int> toggleTaskIsUploaded({required int taskId, required int isUploaded}) async {
+  static Future<int> toggleTaskIsUploaded({
+    required int taskId,
+    required int isUploaded,
+  }) async {
     final db = await DBServices().database;
     return await db.update(
       'TASKS',
@@ -210,15 +201,30 @@ class DBServices {
     );
   }
 
-  static Future<int> toggleIsUpdatedStatus({required int taskId , required int isUpdated}) async{
+  static Future<int> toggleIsUpdatedStatus({
+    required int taskId,
+    required int isUpdated,
+  }) async {
     final db = await DBServices().database;
+    return await db.update(
+      'TASKS',
+      {'IS_UPDATED': isUpdated},
+      where: 'ID = ?',
+      whereArgs: [taskId],
+    );
+  }
+
+  static Future<int> toggleTaskStatus({
+    required int taskId
+})async{
+    final db = await DBServices().database;
+    toggleIsUpdatedStatus(taskId: taskId, isUpdated: 1);
     return await db.update('TASKS',
-    {'IS_UPDATED' : isUpdated},
+        {'STATUS' : 'Completed'},
       where: 'ID = ?',
       whereArgs: [taskId]
     );
   }
-
 
   static Future<List<Task>> getTasksByOwner(String ownerId) async {
     final db = await DBServices().database;
@@ -250,7 +256,7 @@ class DBServices {
     final db = await DBServices().database;
     final result = await db.query(
       'TASKS',
-      where: 'IS_SHARED = ? AND IS_DELETED = 0',
+      where: 'IS_SHARED = ? AND IS_DELETED = 0 AND UPLOAD_STATUS = 1',
       whereArgs: [1],
     );
 
@@ -268,6 +274,33 @@ class DBServices {
 
     print(
       "[Local DB] getPublicTasks: ${tasks.length} tasks fetched with attachments",
+    );
+    return tasks;
+  }
+
+  static Future<List<Task>> getPendingTasks(String ownerId) async {
+    final db = await DBServices().database;
+    final result = await db.query(
+      'TASKS',
+      where:
+          'IS_SHARED = ? AND UPLOAD_STATUS = ? AND OWNER_ID = ? AND IS_DELETED = 0',
+      whereArgs: [1, 0, ownerId],
+    );
+
+    List<Task> tasks = [];
+    for (var taskMap in result) {
+      Task task = Task.fromMap(taskMap);
+      try {
+        task.attachments = await getAttachmentsByTask(task.id!);
+      } catch (e) {
+        print("[Local DB] Error fetching attachments for task ${task.id}: $e");
+        task.attachments = [];
+      }
+      tasks.add(task);
+    }
+
+    print(
+      "[Local DB] getPendingTasks: ${tasks.length} tasks fetched with attachments",
     );
     return tasks;
   }
@@ -293,7 +326,6 @@ class DBServices {
 
     return tasks;
   }
-
 
   static Future<List<Task>?> getUpdatedTasks(String uid) async {
     final db = await DBServices().database;
@@ -339,6 +371,33 @@ class DBServices {
     return tasks;
   }
 
+  Future<void> toggleIsDeletedTask(int taskId) async {
+    final db = await DBServices().database;
+
+    // Get current value
+    final result = await db.query(
+      'TASKS',
+      columns: ['IS_DELETED'],
+      where: 'ID = ?',
+      whereArgs: [taskId],
+      limit: 1,
+    );
+
+    if (result.isEmpty) return;
+
+    final int currentValue = result.first['IS_DELETED'] as int;
+    final int newValue = currentValue == 1 ? 0 : 1;
+
+    // Update value
+    await db.update(
+      'TASKS',
+      {'IS_DELETED': newValue},
+      where: 'ID = ?',
+      whereArgs: [taskId],
+    );
+  }
+
+
   // ----------------- ATTACHMENTS -----------------
   static Future<int> insertAttachment({required Attachment attachment}) async {
     final db = await DBServices().database;
@@ -358,5 +417,23 @@ class DBServices {
     );
 
     return result.map((e) => Attachment.fromMap(e)).toList();
+  }
+
+  static Future<int> deleteAttachment(int attachmentId) async {
+    final db = await DBServices().database;
+    return await db.delete(
+      'ATTACHMENTS',
+      where: 'ID = ?',
+      whereArgs: [attachmentId],
+    );
+  }
+
+  static Future<int> deleteAttachmentsByTask(int taskId) async {
+    final db = await DBServices().database;
+    return await db.delete(
+      'ATTACHMENTS',
+      where: 'TASK_ID = ?',
+      whereArgs: [taskId],
+    );
   }
 }

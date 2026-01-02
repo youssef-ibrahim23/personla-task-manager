@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/localization/locale_provider.dart';
 
@@ -22,14 +21,14 @@ class AnotherOption extends ConsumerWidget {
           isLogin
               ? AppLocalizations.of(context)!.already_have_account
               : AppLocalizations.of(context)!.not_have_account,
-          style:  TextStyle(color: AppColors.dark , fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,),
+          style:  TextStyle(color: Theme.of(context).colorScheme.surface , fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,),
         ).animate().move(begin: const Offset(0, 100), duration: 500.ms),
         TextButton(
           child: Text(
             isLogin
                 ? AppLocalizations.of(context)!.login
                 : AppLocalizations.of(context)!.register,
-            style: TextStyle(color: AppColors.primary , fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont),
+            style: TextStyle(color: Theme.of(context).colorScheme.background , fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont),
           ).animate().move(begin: const Offset(0, 100), duration: 500.ms),
           onPressed: () {
             if (isLogin) {

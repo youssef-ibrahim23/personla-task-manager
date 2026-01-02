@@ -14,7 +14,7 @@ final profileViewModelProvider =
     );
 
 class ProfileViewModel extends StateNotifier<AsyncValue<User?>> {
-  ProfileViewModel() : super(const AsyncValue.data(null));
+  ProfileViewModel() : super(const AsyncValue.loading());
 
   Future<void> getProfileData() async {
     state = const AsyncValue.loading();

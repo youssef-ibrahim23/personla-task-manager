@@ -9,7 +9,6 @@ class Task {
   DateTime startDate;
   DateTime endDate;
   String priority;
-  String? status;
   DateTime? reminder;
   bool? isUpdated;
   bool isDeleted;
@@ -25,7 +24,6 @@ class Task {
     required this.category,
     required this.endDate,
     required this.priority,
-    this.status = 'In Progress',
     required this.startDate,
     DateTime? reminder,
     this.isUpdated = false,
@@ -44,7 +42,6 @@ class Task {
       category: map['CATEGORY'] ?? 'Personal',
       endDate: DateTime.parse(map['END_DATE']),
       priority: map['PRIORITY'] ?? 'Low',
-      status: map['STATUS'] ?? 'In Progress',
       startDate: map['START_DATE'] != null
           ? DateTime.parse(map['START_DATE'])
           : DateTime.now(),
@@ -65,7 +62,6 @@ class Task {
       'CATEGORY': category,
       'END_DATE': endDate.toIso8601String(),
       'PRIORITY': priority,
-      'STATUS': status ?? 'In Progress',
       'START_DATE': startDate.toIso8601String(),
       'REMINDER_DATE': reminder?.toIso8601String(),
       'IS_UPDATED': isUpdated == true ? 1 : 0,

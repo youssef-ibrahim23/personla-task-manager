@@ -6,16 +6,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:personal_task/bottom_navigations.dart';
 import 'package:personal_task/core/constants/app_colors.dart';
 import 'package:personal_task/core/constants/app_strings.dart';
-import 'package:personal_task/core/utils/DB/db_services.dart';
-import 'package:personal_task/core/utils/notifications/local_notification_services.dart';
 import 'package:personal_task/features/auth/views/login_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
 import '../core/utils/localization/l10n/app_localizations.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest_all.dart' as tz;
-
 import 'core/utils/localization/locale_provider.dart';
-import 'core/utils/notifications/FCM_services.dart';
+import 'core/utils/notifications/local_notifcation_services.dart';
+import 'core/utils/work-manager/work_manager_services.dart';
 
 class SplashView extends ConsumerStatefulWidget {
   const SplashView({super.key});
@@ -40,14 +37,29 @@ class _SplashViewState extends ConsumerState<SplashView> {
 
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    final fcmData = await FCMServices.initializeFCM();
-    if (fcmData != null) {
-      await prefs.setString("fcm_access_token", fcmData["token"]!);
-      await prefs.setString("project_id", fcmData["projectId"]!);
-      print("✔ FCM credentials saved");
-    }
 
     if (isFirstTime) {
+      await WorkManagerServices.registerPeriodicSync(
+        uniqueName: 'syncOfflineTasks',
+        taskName: 'syncOfflineTasks',
+        frequency: const Duration(minutes: 15),
+        constraints: Constraints(networkType: NetworkType.connected),
+      );
+
+      await WorkManagerServices.registerPeriodicSync(
+        uniqueName: 'syncUpdatedTasks',
+        taskName: 'syncUpdatedTasks',
+        frequency: const Duration(minutes: 17),
+        constraints: Constraints(networkType: NetworkType.connected),
+      );
+
+      await WorkManagerServices.registerPeriodicSync(
+        uniqueName: 'syncDeleteTasks',
+        taskName: 'syncDeleteTasks',
+        frequency: const Duration(minutes: 20),
+        constraints: Constraints(networkType: NetworkType.connected),
+      );
+
       prefs.setBool("isFirstTime", false);
     }
 
@@ -58,9 +70,12 @@ class _SplashViewState extends ConsumerState<SplashView> {
     if (await Permission.notification.isDenied) {
       await Permission.notification.request();
     }
+    if (await Permission.location.isDenied) {
+      await Permission.location.request();
+    }
 
     FirebaseMessaging.onMessage.listen((message) {
-      LocalNotificationServices().showBasicNotification(
+      LocalNotificationService().showBasicNotification(
         id: 1,
         title: message.notification?.title ?? "Notification",
         body: message.notification?.body ?? "",
@@ -69,15 +84,12 @@ class _SplashViewState extends ConsumerState<SplashView> {
 
     FirebaseMessaging.instance.subscribeToTopic('public-tasks');
 
-    tz.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation('Africa/Cairo'));
-
     // Navigate
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (_) =>
-            isLoggedIn ? const BottomNavigations() : const LoginView(),
+            isLoggedIn ? const BottomNavigation() : const LoginView(),
       ),
     );
   }
@@ -86,7 +98,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: AppColors.light,
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -96,7 +108,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
               AppLocalizations.of(context)!.app_title,
               style: TextStyle(
                 color: AppColors.primary,
-                fontSize: 70,
+                fontSize: 80,
                 fontFamily: ref.watch(localeProvider).languageCode == 'ar'
                     ? AppStrings.primaryArabicFont
                     : AppStrings.primaryFont,
@@ -104,7 +116,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
               textAlign: TextAlign.center,
             ).animate().shimmer(duration: 1.seconds, color: AppColors.light),
             const Spacer(),
-            Image.asset("assets/images.png")
+            Image.asset("assets/logo.png")
                 .animate()
                 .move(begin: const Offset(0, 100), duration: 1.seconds)
                 .then()

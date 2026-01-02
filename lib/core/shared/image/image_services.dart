@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 
 class ImageServices {
 
@@ -10,16 +11,17 @@ class ImageServices {
     final source = await showDialog<ImageSource>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Select Image Source'),
-        content: const Text('Where do you want to pick the image from?'),
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        title: Text(AppLocalizations.of(context)!.select_image_source , style: TextStyle(color: Theme.of(context).colorScheme.primary),),
+        content:  Text(AppLocalizations.of(context)!.where_do_you_want_to_pick_image , style: TextStyle(color: Theme.of(context).colorScheme.primary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, ImageSource.camera),
-            child: const Text('Camera'),
+            child:  Text(AppLocalizations.of(context)!.camera),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, ImageSource.gallery),
-            child: const Text('Gallery'),
+            child:  Text(AppLocalizations.of(context)!.gallery),
           ),
         ],
       ),

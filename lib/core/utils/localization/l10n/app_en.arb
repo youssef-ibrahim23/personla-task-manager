@@ -9,6 +9,23 @@
   "registering": "Registering",
   "not_have_account": "Don't Have An Account?",
   "create_your_account": "Create Your Account",
+  "select_image_source": "Select Image Source",
+  "where_do_you_want_to_pick_image": "Where do you want to pick the image from?",
+  "gallery": "Gallery",
+  "camera": "Camera",
+  "open_mail": "Open mail",
+  "name_required": "Name required",
+  "phone_number_required": "Phone number required",
+  "email_required": "Email Is Required",
+  "password_required": "Password Is Required",
+  "please_enter_valid_email": "Please Enter Valid Email",
+  "connection_Error_no_internet": "Connection Error, No Internet",
+  "this_user_not_found": "This user not found",
+  "email_is_not_verified": "Email is not verified",
+  "pending_tasks": "Pending",
+  "no_tasks_found": "No tasks found",
+  "add_images": "Add Images",
+  "no_images_selected": "No Images Selected",
   "name": "Name",
   "phone_number": "Phone Number",
   "already_have_account": "Already Have An Account",
@@ -32,6 +49,10 @@
   "task_details": "Task Details",
   "add_task": "Add Task",
   "add_reminder": "Add Reminder",
+  "before_2_minutes": "Before 2 minutes",
+  "before_5_minutes": "Before 5 minutes",
+  "before_10_minutes": "Before 10 minutes",
+  "before_20_minutes": "Before 20 minutes",
   "enter_task_title": "Enter Task Title",
   "enter_task_description": "Enter Task Description",
   "select_task_category": "Select Task Category",
@@ -50,7 +71,7 @@
   },
   "save_task": "Save Task",
   "my_tasks": "My Tasks",
-  "public_tasks": "Public Tasks",
+  "public_tasks": "Public",
   "see_all": "See All",
   "no_internet_connection": "No Internet Connection",
   "humidity": "Humidity",
@@ -73,7 +94,113 @@
   "change_language": "Change Language",
   "arabic": "Arabic",
   "english": "English",
+  "settings_and_preferences": "Settings & Preferences",
+  "account": "Account",
   "logout": "Logout",
   "logout_failed": "Logout failed. Please try again.",
-  "logout_confirmation": "Are you sure you want to logout?"
+  "logout_confirmation": "Are you sure you want to logout?",
+  "weather": "Weather",
+  "feels_like": "Feels Like",
+  "visibility": "Visibility",
+  "pressure": "Pressure",
+  "cloud": "Cloud",
+  "precipitation": "Precipitation",
+  "dew_point": "Dew Point",
+  "gust": "Gust",
+  "uv_index": "UV Index",
+  "low_uv": "Low",
+  "moderate_uv": "Moderate",
+  "high_uv": "High",
+  "very_high_uv": "Very High",
+  "extreme_uv": "Extreme",
+  "retry": "Retry",
+  "refresh": "Refresh",
+  "weather_details": "Weather Details",
+  "current_weather": "Current Weather",
+  "temperature": "Temperature",
+  "weather_condition": "Weather Condition",
+  "additional_info": "Additional Info",
+  "weather_error": "Weather Data Error",
+  "fetching_weather": "Fetching weather data...",
+  "last_updated": "Last Updated",
+  "sunrise": "Sunrise",
+  "sunset": "Sunset",
+  "chance_of_rain": "Chance of Rain",
+  "wind_direction": "Wind Direction",
+  "air_quality": "Air Quality",
+  "good": "Good",
+  "moderate": "Moderate",
+  "unhealthy": "Unhealthy",
+  "hazardous": "Hazardous",
+  "weather_forecast": "Weather Forecast",
+  "today": "Today",
+  "tomorrow": "Tomorrow",
+  "this_week": "This Week",
+  "hourly_forecast": "Hourly Forecast",
+  "daily_forecast": "Daily Forecast",
+  "max_temp": "Max Temp",
+  "min_temp": "Min Temp",
+  "feels_like_temp": "Feels like {temp}°C",
+  "@feels_like_temp": {
+    "placeholders": {
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "weather_in": "Weather in {city}",
+  "@weather_in": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "save_task_failed": "Failed To Save Task",
+  "tasks_count": "{count} tasks",
+  "@tasks_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "completed_count": "{count} completed",
+  "@completed_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "no_tasks": "No tasks",
+  "swipe_to_delete_hint": "Swipe left on any task to delete it",
+  "swipe_to_delete_hint_owner": "Swipe left on your tasks to delete them",
+  "task_deleted_successfully": "Task deleted successfully",
+  "no_tasks_in_category": "It looks like you don't have any tasks in this category yet.",
+  "create_new_task": "Create New Task",
+  "stats": "Stats",
+  "task_statistics": "Task Statistics",
+  "total_tasks": "Total Tasks",
+  "completed": "Completed",
+  "pending": "Pending",
+  "high_priority": "High Priority",
+  "completion_progress": "Completion Progress",
+  "delete_task_confirmation_with_title": "Are you sure you want to delete \"{title}\"?",
+  "@delete_task_confirmation_with_title": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "weather_data_unavailable": "Weather data unavailable",
+  "unknown_location": "Unknown Location",
+  "start_by_creating_task": "Start by creating a new task",
+  "not_completed": "Not Completed",
+  "overview_of_your_tasks": "Overview of your tasks",
+  "basic_information": "Basic Information",
+  "category_priority": "Category & Priority",
+  "date_time": "Date & Time",
+  "settings": "Settings"
 }

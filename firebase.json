@@ -1,0 +1,41 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "personla-task",
+          "appId": "1:616244262881:android:a65fe27e7fee31738004a0",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "personla-task",
+          "configurations": {
+            "android": "1:616244262881:android:a65fe27e7fee31738004a0",
+            "ios": "1:616244262881:ios:19cb057dd9612d3b8004a0",
+            "macos": "1:616244262881:ios:19cb057dd9612d3b8004a0",
+            "web": "1:616244262881:web:4e6b5d5e2d217c848004a0",
+            "windows": "1:616244262881:web:1e156707c414f3128004a0"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ]
+}

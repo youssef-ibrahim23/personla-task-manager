@@ -4,6 +4,7 @@ import 'package:personal_task/core/shared/task/task_item.dart';
 import 'package:personal_task/core/shared/task/tasks_shimmer.dart';
 import 'package:personal_task/core/utils/DB/models/task.dart';
 import 'package:personal_task/features/tasks/views/all_tasks_view.dart';
+import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 
 class PublicTasksWidget extends StatelessWidget {
   final List<Task>? tasks;
@@ -39,7 +40,7 @@ class PublicTasksWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Public Tasks',
+                    AppLocalizations.of(context)!.public_tasks,
                     style: TextStyle(
                       fontFamily: 'Luckiest Guy',
                       fontSize: 18,
@@ -67,10 +68,10 @@ class PublicTasksWidget extends StatelessWidget {
               ),
               TextButton(
                 onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AllTasksView(tasks: tasks , title: 'Public Tasks',)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AllTasksView(tasks: tasks , title: AppLocalizations.of(context)!.public_tasks)));
                 },
                 child: Text(
-                  'See All',
+                  AppLocalizations.of(context)!.see_all,
                   style: TextStyle(
                     fontFamily: 'Luckiest Guy',
                     color: AppColors.primary,

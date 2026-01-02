@@ -15,7 +15,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get login => 'تسجيل الدخول';
 
   @override
-  String get logging => 'logging';
+  String get logging => 'يتم تسجيل الدخول';
 
   @override
   String get email => 'البريد الألكتروني';
@@ -34,6 +34,62 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get create_your_account => 'انشئ حسابك';
+
+  @override
+  String get select_image_source => 'اختر مصدر الصورة';
+
+  @override
+  String get where_do_you_want_to_pick_image => 'من اين انت تريد ان تختار الصورة؟';
+
+  @override
+  String get gallery => 'المعرض';
+
+  @override
+  String get camera => 'الكاميرا';
+
+  @override
+  String get open_mail => 'فتح البريد الالكتروني';
+
+  @override
+  String get name_required => 'الاسم مطلوب';
+
+  @override
+  String get phone_number_required => 'رقم الهاتف مطلوب';
+
+  @override
+  String get week_password => 'الباسورد ضعيف';
+
+  @override
+  String get email_required => 'البريد الاكتروني مطلوب';
+
+  @override
+  String get password_required => 'الباسورد مطلوب';
+
+  @override
+  String get please_enter_valid_email => 'من فضلك ادخل ايميل صالح';
+
+  @override
+  String get connection_Error_no_internet => 'خطاء في الاتصال,لا يوجد انترنت';
+
+  @override
+  String get this_user_not_found => 'هذا المستخدم غير موجود';
+
+  @override
+  String get email_is_not_verified => 'الايميل غير متحقق';
+
+  @override
+  String get you_can_not_edit_on_task => 'لا يمكنك التعديل على مهمة ليست لك';
+  @override
+  String get pending_tasks => 'مهام في انتظار الرفع';
+
+  @override
+  String get no_tasks_found => 'لا يوجد مهام';
+
+  @override
+  String get add_images => 'اضف صور';
+
+  @override
+  String get no_images_selected => 'لا يوجد صور';
 
   @override
   String get name => 'الاسم';
@@ -105,6 +161,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get add_reminder => 'إضافة تذكير';
 
   @override
+  String get before_2_minutes => 'قبل دقيقتين';
+
+  @override
+  String get before_5_minutes => 'قبل 5 دقائق';
+
+  @override
+  String get before_10_minutes => 'قبل 10 دقائق';
+
+  @override
+  String get before_20_minutes => 'قبل 20 دقيقة';
+
+  @override
   String get enter_task_title => 'أدخل عنوان المهمة';
 
   @override
@@ -129,7 +197,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get attachments => 'المرفقات';
 
   @override
-  String images(int count) => '$count صورة';
+  String images(int count) {
+    return '$count صورة';
+  }
 
   @override
   String get save_task => 'حفظ المهمة';
@@ -138,7 +208,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get my_tasks => 'مهامي';
 
   @override
-  String get public_tasks => 'المهام العامة';
+  String get public_tasks => 'العامة';
 
   @override
   String get see_all => 'عرض الكل';
@@ -207,6 +277,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get english => 'الإنجليزية';
 
   @override
+  String get settings_and_preferences => 'الإعدادات والتفضيلات';
+
+  @override
+  String get account => 'الحساب';
+
+  @override
   String get logout => 'تسجيل الخروج';
 
   @override
@@ -214,4 +290,221 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get logout_confirmation => 'هل أنت متأكد أنك تريد تسجيل الخروج؟';
+
+  @override
+  String get weather => 'Weather';
+
+  @override
+  String get feels_like => 'Feels Like';
+
+  @override
+  String get visibility => 'Visibility';
+
+  @override
+  String get pressure => 'Pressure';
+
+  @override
+  String get cloud => 'Cloud';
+
+  @override
+  String get precipitation => 'Precipitation';
+
+  @override
+  String get dew_point => 'Dew Point';
+
+  @override
+  String get gust => 'Gust';
+
+  @override
+  String get uv_index => 'UV Index';
+
+  @override
+  String get low_uv => 'Low';
+
+  @override
+  String get moderate_uv => 'Moderate';
+
+  @override
+  String get high_uv => 'High';
+
+  @override
+  String get very_high_uv => 'Very High';
+
+  @override
+  String get extreme_uv => 'Extreme';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get weather_details => 'Weather Details';
+
+  @override
+  String get current_weather => 'Current Weather';
+
+  @override
+  String get temperature => 'Temperature';
+
+  @override
+  String get weather_condition => 'Weather Condition';
+
+  @override
+  String get additional_info => 'Additional Info';
+
+  @override
+  String get weather_error => 'Weather Data Error';
+
+  @override
+  String get fetching_weather => 'Fetching weather data...';
+
+  @override
+  String get last_updated => 'Last Updated';
+
+  @override
+  String get sunrise => 'Sunrise';
+
+  @override
+  String get sunset => 'Sunset';
+
+  @override
+  String get chance_of_rain => 'Chance of Rain';
+
+  @override
+  String get wind_direction => 'Wind Direction';
+
+  @override
+  String get air_quality => 'Air Quality';
+
+  @override
+  String get good => 'Good';
+
+  @override
+  String get moderate => 'Moderate';
+
+  @override
+  String get unhealthy => 'Unhealthy';
+
+  @override
+  String get hazardous => 'Hazardous';
+
+  @override
+  String get weather_forecast => 'Weather Forecast';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get tomorrow => 'Tomorrow';
+
+  @override
+  String get this_week => 'This Week';
+
+  @override
+  String get hourly_forecast => 'Hourly Forecast';
+
+  @override
+  String get daily_forecast => 'Daily Forecast';
+
+  @override
+  String get max_temp => 'Max Temp';
+
+  @override
+  String get min_temp => 'Min Temp';
+
+  @override
+  String feels_like_temp(String temp) {
+    return 'Feels like $temp°C';
+  }
+
+  @override
+  String weather_in(String city) {
+    return 'الطقس في $city';
+  }
+
+  @override
+  String get save_task_failed => 'فشل حفظ المهمة';
+
+  @override
+  String tasks_count(int count) {
+    return '$count مهمة';
+  }
+
+  @override
+  String completed_count(int count) {
+    return '$count مكتملة';
+  }
+
+  @override
+  String get no_tasks => 'لا توجد مهام';
+
+  @override
+  String get swipe_to_delete_hint => 'اسحب يساراً على أي مهمة لحذفها';
+
+  @override
+  String get swipe_to_delete_hint_owner => 'اسحب يميناً على مهامك لحذفها';
+
+  @override
+  String get task_deleted_successfully => 'تم حذف المهمة بنجاح';
+
+  @override
+  String get no_tasks_in_category => 'يبدو أنه ليس لديك أي مهام في هذه الفئة بعد.';
+
+  @override
+  String get create_new_task => 'إنشاء مهمة جديدة';
+
+  @override
+  String get stats => 'الإحصائيات';
+
+  @override
+  String get task_statistics => 'إحصائيات المهام';
+
+  @override
+  String get total_tasks => 'إجمالي المهام';
+
+  @override
+  String get completed => 'مكتملة';
+
+  @override
+  String get pending => 'قيد الانتظار';
+
+  @override
+  String get high_priority => 'أولوية عالية';
+
+  @override
+  String get completion_progress => 'تقدم الإنجاز';
+
+  @override
+  String delete_task_confirmation_with_title(String title) {
+    return 'هل أنت متأكد أنك تريد حذف "$title"؟';
+  }
+
+  @override
+  String get weather_data_unavailable => 'بيانات الطقس غير متاحة';
+
+  @override
+  String get unknown_location => 'موقع غير معروف';
+
+  @override
+  String get start_by_creating_task => 'ابدأ بإنشاء مهمة جديدة';
+
+  @override
+  String get not_completed => 'غير مكتملة';
+
+  @override
+  String get overview_of_your_tasks => 'نظرة عامة على مهامك';
+
+  @override
+  String get basic_information => 'المعلومات الأساسية';
+
+  @override
+  String get category_priority => 'الفئة والأولوية';
+
+  @override
+  String get date_time => 'التاريخ والوقت';
+
+  @override
+  String get settings => 'الإعدادات';
 }

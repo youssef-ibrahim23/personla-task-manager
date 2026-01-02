@@ -2,12 +2,19 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:personal_task/core/utils/DB/models/attachment.dart';
+import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 
 class AttachmentsGrid extends StatefulWidget {
   final bool isUpdate;
   final List<Attachment> attachments;
+  final Function(int)? onAttachmentDeleted;
 
-  AttachmentsGrid({super.key, required this.attachments, this.isUpdate = false});
+  AttachmentsGrid({
+    super.key,
+    required this.attachments,
+    this.isUpdate = false,
+    this.onAttachmentDeleted,
+  });
 
   @override
   State<AttachmentsGrid> createState() => _AttachmentsGridState();
@@ -49,7 +56,7 @@ class _AttachmentsGridState extends State<AttachmentsGrid> {
           ),
           const SizedBox(height: 8),
           Text(
-            'No images selected',
+            AppLocalizations.of(context)!.no_images_selected,
             style: TextStyle(color: Colors.grey.shade600),
           ),
         ],
@@ -82,9 +89,14 @@ class _AttachmentsGridState extends State<AttachmentsGrid> {
               right: screenWidth * 0.02,
               child: GestureDetector(
                 onTap: () {
+                  final deletedAttachment = widget.attachments[index];
                   setState(() {
                     widget.attachments.removeAt(index);
                   });
+                  // Notify parent about deletion
+                  if (widget.onAttachmentDeleted != null && deletedAttachment.id != null) {
+                    widget.onAttachmentDeleted!(deletedAttachment.id!);
+                  }
                 },
                 child: Container(
                   padding: const EdgeInsets.all(4),

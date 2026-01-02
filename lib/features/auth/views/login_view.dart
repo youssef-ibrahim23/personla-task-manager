@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:personal_task/bottom_navigations.dart';
-import 'package:personal_task/core/constants/app_colors.dart';
-import 'package:personal_task/core/constants/app_strings.dart';
 import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 import 'package:personal_task/features/auth/views/register_view.dart';
 import 'package:personal_task/features/auth/views/widgets/another_option.dart';
@@ -14,6 +12,7 @@ import 'package:personal_task/features/auth/view-models/login_view_model.dart';
 import 'package:personal_task/core/shared/text-field/text_field.dart';
 import '../../../core/utils/helpers.dart';
 import '../../../core/utils/localization/locale_provider.dart';
+import '../../../core/utils/theme/theme_provider.dart';
 
 class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
@@ -48,7 +47,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
           if (user != null) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => BottomNavigations()),
+              MaterialPageRoute(builder: (_) => BottomNavigation()),
             );
           }
         },
@@ -68,30 +67,78 @@ class _LoginViewState extends ConsumerState<LoginView> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.green,
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height:  ref.watch(localeProvider).languageCode == 'ar' ? screenHeight * 0.14 : screenHeight * 0.22),
+              SizedBox(height: screenHeight * 0.08),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  PopupMenuButton(
+                    icon: const Icon(
+                      Icons.more_vert,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                    onSelected: (value) {
+                      if(value is ThemeMode){
+                        ref.read(themeProvider.notifier).toggleTheme();
+                      }
+                      else{
+                        ref.read(localeProvider.notifier).setLocaleFromString(value.toString());
+                      }
+                    },
+                    itemBuilder: (context) {
+                      final locale = ref.watch(localeProvider);
+                      final themeMode = ref.watch(themeProvider);
+
+                      return [
+                        PopupMenuItem(
+                          value: locale.languageCode == 'ar' ? 'en' : 'ar',
+                          child: Text(
+                            locale.languageCode == 'ar' ? AppLocalizations.of(context)!.english : AppLocalizations.of(context)!.arabic,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: themeMode == ThemeMode.dark
+                              ? ThemeMode.light
+                              : ThemeMode.dark,
+                          child: Text(
+                            themeMode == ThemeMode.dark
+                                ? AppLocalizations.of(context)!.light_mode
+                                : AppLocalizations.of(context)!.dark_mode,
+                          ),
+                        ),
+                      ];
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: ref.watch(localeProvider).languageCode == 'ar'
+                    ? screenHeight * 0.0
+                    : screenHeight * 0.1,
+              ),
               Text(
                 AppLocalizations.of(context)!.app_title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
-                  fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
-                  fontSize: ref.watch(localeProvider).languageCode == 'ar' ? 100 : 70,
+                  fontSize: ref.watch(localeProvider).languageCode == 'ar'
+                      ? 105
+                      : 70,
                 ),
               ).animate().shimmer(
-                color: AppColors.primary,
+                color: Theme.of(context).primaryColor,
                 duration: 1.seconds,
               ),
               SizedBox(height: screenHeight * 0.07),
               Container(
                 width: screenWidth,
-                height: screenHeight * 0.5,
+                height: screenHeight * 0.49,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: Column(
@@ -100,9 +147,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     Text(
                       AppLocalizations.of(context)!.login,
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.surface ,
                         fontSize: 50,
-                        fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.02),
@@ -110,37 +156,37 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       hintText: AppLocalizations.of(context)!.email,
                       controller: _controllers['email'],
                       obscureText: false,
-                      fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
+                      suffixIcon: Icons.mail,
                     ),
                     SizedBox(height: screenHeight * 0.05),
                     CustomTextField(
                       hintText: AppLocalizations.of(context)!.password,
                       controller: _controllers['password'],
                       obscureText: true,
-                      isHaveSuffixIcon: true,
-                      fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
+                      isPassword: true,
                     ),
                     SizedBox(height: screenHeight * 0.035),
                     Button(
                       text: loginState.isLoading
                           ? AppLocalizations.of(context)!.logging
                           : AppLocalizations.of(context)!.login,
-                      onPressed: loginState.isLoading ? () {} : () async {
-                        await ref.read(loginViewModelProvider.notifier).signIn(
-                          LoginData(
-                            email: _controllers['email']!.text,
-                            password: _controllers['password']!.text,
-                          ),
-                        );
-                      },
+                      onPressed: loginState.isLoading
+                          ? () {}
+                          : () async {
+                              await ref
+                                  .read(loginViewModelProvider.notifier)
+                                  .signIn(
+                                    LoginData(
+                                      email: _controllers['email']!.text,
+                                      password: _controllers['password']!.text,
+                                    ),
+                                    context,
+                                  );
+                            },
                       state: loginState.isLoading,
-                      fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
                     ).animate().moveX(begin: 500, duration: 500.ms),
                     SizedBox(height: screenHeight * 0.01),
-                    AnotherOption(
-                      isLogin: false,
-                      page: const RegisterView(),
-                    ),
+                    AnotherOption(isLogin: false, page: const RegisterView()),
                   ],
                 ),
               ),

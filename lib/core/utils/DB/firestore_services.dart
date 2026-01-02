@@ -102,19 +102,54 @@ class FireStoreServices {
           .doc(task.id.toString())
           .update(task.toMap());
 
-      if (task.attachments != null && task.attachments!.isNotEmpty) {
-        for (Attachment attachment in task.attachments!) {
+      // Get existing attachments from Firestore
+      final attachmentsSnapshot = await firebaseFirestore
+          .collection('tasks')
+          .doc(task.id.toString())
+          .collection('attachments')
+          .get();
+
+      final existingAttachmentIds = attachmentsSnapshot.docs
+          .map((doc) => int.parse(doc.id))
+          .toSet();
+
+      // Get new attachment IDs
+      final newAttachmentIds = task.attachments != null && task.attachments!.isNotEmpty
+          ? task.attachments!.map((att) => att.id).where((id) => id != null).cast<int>().toSet()
+          : <int>{};
+
+      // Delete attachments that are no longer in the new list
+      final attachmentsToDelete = existingAttachmentIds.difference(newAttachmentIds);
+      for (int attachmentId in attachmentsToDelete) {
+        try {
           await firebaseFirestore
               .collection('tasks')
               .doc(task.id.toString())
               .collection('attachments')
-              .doc(attachment.id.toString())
-              .set(await attachment.toMap());
-          print('[FireStore] update attachments');
+              .doc(attachmentId.toString())
+              .delete();
+          print('[FireStore] Deleted attachment: $attachmentId');
+        } catch (e) {
+          print('[FireStore] Error deleting attachment $attachmentId: $e');
         }
-
-        print("[FireStore] updateTask(): success");
       }
+
+      // Add or update attachments
+      if (task.attachments != null && task.attachments!.isNotEmpty) {
+        for (Attachment attachment in task.attachments!) {
+          if (attachment.id != null) {
+            await firebaseFirestore
+                .collection('tasks')
+                .doc(task.id.toString())
+                .collection('attachments')
+                .doc(attachment.id.toString())
+                .set(await attachment.toMap());
+            print('[FireStore] Updated attachment: ${attachment.id}');
+          }
+        }
+      }
+
+      print("[FireStore] updateTask(): success");
     } catch (e) {
       print("[FireStore] updateTask(): error -> $e");
     }

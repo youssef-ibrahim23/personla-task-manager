@@ -5,13 +5,15 @@ import 'package:personal_task/core/utils/notifications/FCM_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:personal_task/core/utils/DB/db_services.dart';
-import 'package:personal_task/core/utils/DB/models/task.dart';
 
 import '../../../firebase_options.dart';
 
 class WorkManagerServices {
   static Future<void> initialize() async {
-    await Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+    await Workmanager().initialize(
+      callbackDispatcher,
+      isInDebugMode: true,
+    );
     print("WorkManager initialized");
   }
 
@@ -20,6 +22,7 @@ class WorkManagerServices {
     required String taskName,
     Duration? frequency,
     Constraints? constraints,
+    Map<String , dynamic>? inputData,
   }) async {
     try {
       await Workmanager().registerPeriodicTask(
@@ -28,6 +31,7 @@ class WorkManagerServices {
         frequency: frequency,
         constraints: constraints,
         existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
+        inputData: inputData
       );
       print("Periodic sync task registered: $taskName");
     } catch (e) {
@@ -41,12 +45,14 @@ void callbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
     print("[Workmanager] Background task running: $taskName");
 
+    // Initialize DB
     try {
       await DBServices().initDB();
     } catch (e) {
       print('[Workmanager] Failed to init DB: $e');
     }
 
+    // Initialize Firebase
     try {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
@@ -55,12 +61,8 @@ void callbackDispatcher() {
       print('[Workmanager] Failed to init Firebase: $e');
     }
 
+    // Get UID
     String? uid;
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    final accessToken = preferences.getString('fcm_access_token') ?? '';
-    print("The Acces Token is : $accessToken}");
-    final projectId = preferences.getString('project_id') ?? '';
-    print("The Project Id is : $projectId}");
     try {
       uid = await Helpers.getUID();
       if (uid == null) {
@@ -72,11 +74,18 @@ void callbackDispatcher() {
       return false;
     }
 
+    // Load Service Account JSON from SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final serviceAccountJson = prefs.getString('service_account_json');
+    print(serviceAccountJson);
+    if (serviceAccountJson == null) {
+      print("[Workmanager] Service account JSON not found, skipping FCM.");
+    }
+
     try {
+      // Sync Offline Tasks
       if (taskName == 'syncOfflineTasks') {
-        final List<Task> offlineTasks = await DBServices.getUnUploadedTasks(
-          uid,
-        );
+        final offlineTasks = await DBServices.getUnUploadedTasks(uid);
 
         if (offlineTasks.isNotEmpty) {
           for (final task in offlineTasks) {
@@ -87,29 +96,31 @@ void callbackDispatcher() {
                 taskId: task.id!,
                 isUploaded: 1,
               );
-              if (task.isShared == true) {
-                FCMServices.sendTopicNotification(
-                  topic: 'public-tasks',
-                  title: "New Public Task : ${task.title}",
-                  body: task.description,
-                  accessToken: accessToken,
-                  projectId: projectId,
-                );
+
+              if (task.isShared == true && serviceAccountJson != null) {
+                try {
+                  await FCMServices.sendTopicNotificationFromJson(
+                    jsonString: serviceAccountJson,
+                    topic: 'public-tasks',
+                    title: "New Public Task : ${task.title}",
+                    body: task.description,
+                  );
+                } catch (e) {
+                  print("[Workmanager] Failed sending FCM for task ${task.id}: $e");
+                }
               }
-              print("[Workmanager] Offline tasks synced: ${offlineTasks.length}");
-              return true;
             } catch (e) {
               print('[Workmanager] Failed syncing offline task ${task.id}: $e');
-              return false;
             }
           }
+        } else {
+          print("[Workmanager] No offline tasks to sync");
         }
-        print("No Tasks To Sync It");
-        return true;
       }
 
+      // Sync Updated Tasks
       if (taskName == 'syncUpdatedTasks') {
-        final List<Task>? updatedTasks = await DBServices.getUpdatedTasks(uid);
+        final updatedTasks = await DBServices.getUpdatedTasks(uid);
 
         if (updatedTasks != null && updatedTasks.isNotEmpty) {
           for (final task in updatedTasks) {
@@ -120,30 +131,50 @@ void callbackDispatcher() {
                 taskId: task.id!,
                 isUpdated: 0,
               );
-              if (task.isShared == true) {
-                FCMServices.sendTopicNotification(
-                  topic: 'public-tasks',
-                  title: "New Public Task : ${task.title}",
-                  body: task.description,
-                  accessToken: accessToken,
-                  projectId: projectId,
-                );
+
+              if (task.isShared == true && serviceAccountJson != null) {
+                try {
+                  await FCMServices.sendTopicNotificationFromJson(
+                    jsonString: serviceAccountJson,
+                    topic: 'public-tasks',
+                    title: "Updated Public Task : ${task.title}",
+                    body: task.description,
+                  );
+                } catch (e) {
+                  print("[Workmanager] Failed sending FCM for updated task ${task.id}: $e");
+                }
               }
             } catch (e) {
               print('[Workmanager] Failed syncing updated task ${task.id}: $e');
             }
           }
+        } else {
+          print("[Workmanager] No updated tasks to sync");
         }
-
-        print(
-          "[Workmanager] Updated tasks synced: ${updatedTasks?.length ?? 0}",
-        );
-        return true;
       }
 
+      if(taskName == "syncDeleteTasks"){
+
+          final deletedTasks = await DBServices.getDeletedTasks(uid);
+
+          if (deletedTasks != null && deletedTasks.isNotEmpty) {
+            for (final task in deletedTasks) {
+              try {
+                await FireStoreServices().deleteTask(taskId: task.id.toString());
+                await DBServices.deleteTask(task.id!);
+              } catch (e) {
+                print('[Workmanager] Failed syncing deleted task ${task.id}: $e');
+              }
+            }
+          } else {
+            print("[Workmanager] No deleted tasks to sync");
+          }
+        }
+
+      print("[Workmanager] Background task $taskName finished successfully");
       return true;
     } catch (e, st) {
-      print("[Workmanager] Error: $e\n$st");
+      print("[Workmanager] Error in background task: $e\n$st");
       return false;
     }
   });

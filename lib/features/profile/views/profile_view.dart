@@ -1,19 +1,16 @@
-import 'dart:io';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:personal_task/core/constants/app_colors.dart';
-import 'package:personal_task/core/constants/app_strings.dart';
 import 'package:personal_task/core/shared/image/image_providers.dart';
 import 'package:personal_task/core/shared/image/image_widget.dart';
 import 'package:personal_task/core/utils/helpers.dart';
 import 'package:personal_task/core/shared/button/button.dart';
 import 'package:personal_task/core/shared/text-field/text_field.dart';
+import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 
 import '../../../core/utils/DB/models/user.dart';
-import '../../../core/utils/localization/locale_provider.dart';
 import '../view-models/profile_view_model.dart';
 
 class ProfileView extends ConsumerStatefulWidget {
@@ -78,7 +75,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
         error: (e, _) {
           Helpers.displayDialog(
             context: context,
-            title: 'Error',
+            title: AppLocalizations.of(context)!.error,
             message: e.toString(),
             dialogType: DialogType.error,
             openMailOption: false,
@@ -89,106 +86,105 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: AppColors.primary,
+        toolbarHeight: 130,
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text(
-          'Profile',
+          AppLocalizations.of(context)!.profile,
           style: TextStyle(
             color: AppColors.light,
             fontSize: 45,
-            fontFamily: AppStrings.primaryFont,
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Spacer(),
-          Container(
-            width: screenWidth,
-            height: screenHeight * 0.73,
-            decoration: BoxDecoration(
-              color: AppColors.light,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+
+            Container(
+              width: screenWidth,
+              height: screenHeight * 0.73,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(height: screenHeight * 0.05),
+                  ImageWidget(
+                    pickedImageProvider: profilePickedImageProvider,
+                    cloudImage: ref.watch(profileImageProvider),
+                    state: ref.watch(profileViewModelProvider).isLoading,
+                  ),
+                  SizedBox(height: screenHeight * 0.05),
+                  CustomTextField(
+                    hintText: AppLocalizations.of(context)!.name,
+                    controller: _controllers['name'],
+                    profileState: profileState.isLoading,
+                    suffixIcon: Icons.short_text,
+                    ),
+                  SizedBox(height: screenHeight * 0.05),
+                  CustomTextField(
+                    hintText: AppLocalizations.of(context)!.email,
+                    controller: _controllers['email'],
+                    profileState: profileState.isLoading,
+                    suffixIcon: Icons.mail,
+                     ),
+                  SizedBox(height: screenHeight * 0.05),
+                  CustomTextField(
+                    hintText: AppLocalizations.of(context)!.phone_number,
+                    controller: _controllers['phoneNumber'],
+                    profileState: profileState.isLoading,
+                    suffixIcon: Icons.phone,
+                     ),
+                  SizedBox(height: screenHeight * 0.04),
+                  Button(
+                    text: AppLocalizations.of(context)!.change_password,
+                    onPressed: () async {
+                      final result = await ref
+                          .read(profileViewModelProvider.notifier)
+                          .sendRestPasswordEmail(_controllers['email']!.text);
+                      result == true
+                          ? Helpers.displayDialog(
+                              context: context,
+                              title: AppLocalizations.of(context)!.reset_password_email_sent,
+                              message:
+                                  AppLocalizations.of(context)!.reset_password_email_message,
+                              dialogType: DialogType.success,
+                              openMailOption: true,
+                            )
+                          : null;
+                    },
+                    state: profileState.isLoading,
+                  ),
+                  SizedBox(height: screenHeight * 0.03),
+                  Button(
+                    text: AppLocalizations.of(context)!.save_changes,
+                    onPressed: () async {
+                      await ref
+                          .read(profileViewModelProvider.notifier)
+                          .updateProfile(
+                        user: User(
+                          uid: userData!.uid,
+                          name: _controllers['name']!.text,
+                          email: _controllers['email']!.text,
+                          phoneNumber: _controllers['phoneNumber']!.text,
+                          password: userData!.password,
+                        ),
+                        ref: ref,
+                      );
+                    },
+                    state: profileState.isLoading,
+                  ),
+                ],
               ),
             ),
-            child: Column(
-              children: [
-                SizedBox(height: screenHeight * 0.05),
-                ImageWidget(
-                  pickedImageProvider: profilePickedImageProvider,
-                  cloudImage: ref.watch(profileImageProvider),
-                  state: ref.watch(profileViewModelProvider).isLoading,
-                ),
-                SizedBox(height: screenHeight * 0.05),
-                CustomTextField(
-                  hintText: 'Name',
-                  controller: _controllers['name'],
-                  profileState: profileState.isLoading,
-                  fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
-                ),
-                SizedBox(height: screenHeight * 0.05),
-                CustomTextField(
-                  hintText: 'Email',
-                  controller: _controllers['email'],
-                  profileState: profileState.isLoading,
-                  fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
-                ),
-                SizedBox(height: screenHeight * 0.05),
-                CustomTextField(
-                  hintText: 'Phone Number',
-                  controller: _controllers['phoneNumber'],
-                  profileState: profileState.isLoading,
-                  fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
-                ),
-                SizedBox(height: screenHeight * 0.04),
-                Button(
-                  text: 'Change Password',
-                  onPressed: () async {
-                    final result = await ref
-                        .read(profileViewModelProvider.notifier)
-                        .sendRestPasswordEmail(_controllers['email']!.text);
-                    result == true
-                        ? Helpers.displayDialog(
-                            context: context,
-                            title: 'Reset password email sent',
-                            message:
-                                'We sent to your email password reset link, please check your mail',
-                            dialogType: DialogType.success,
-                            openMailOption: true,
-                          )
-                        : null;
-                  },
-                  state: profileState.isLoading,
-                  fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
-                ),
-                SizedBox(height: screenHeight * 0.03),
-                Button(
-                  text: 'Save Changes',
-                  onPressed: () async {
-                    await ref
-                        .read(profileViewModelProvider.notifier)
-                        .updateProfile(
-                      user: User(
-                        uid: userData!.uid,
-                        name: _controllers['name']!.text,
-                        email: _controllers['email']!.text,
-                        phoneNumber: _controllers['phoneNumber']!.text,
-                        password: userData!.password,
-                      ),
-                      ref: ref,
-                    );
-                  },
-                  state: profileState.isLoading,
-                  fontFamily: ref.watch(localeProvider).languageCode == 'ar' ? AppStrings.primaryArabicFont: AppStrings.primaryFont,
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

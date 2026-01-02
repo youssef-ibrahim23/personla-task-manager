@@ -1,7 +1,9 @@
 // view_models/login_view_model.dart
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 import '../../../core/utils/helpers.dart';
 import '../../../core/utils/validators.dart';
 import '../data/login_data.dart';
@@ -16,28 +18,28 @@ final loginViewModelProvider =
 class LoginViewModel extends StateNotifier<AsyncValue<UserCredential?>> {
   LoginViewModel() : super(const AsyncValue.data(null));
 
-  Future<void> signIn(LoginData data) async {
+  Future<void> signIn(LoginData data , BuildContext context) async {
     state = const AsyncValue.loading();
 
     if (data.email.isEmpty) {
-      state = AsyncValue.error('Email Is Required', StackTrace.empty);
+      state = AsyncValue.error(AppLocalizations.of(context)!.email_required, StackTrace.empty);
       return;
     }
 
     if (data.password.isEmpty) {
-      state = AsyncValue.error('Password Is Required', StackTrace.empty);
+      state = AsyncValue.error(AppLocalizations.of(context)!.password_required, StackTrace.empty);
       return;
     }
 
     final emailError = Validators.validateEmail(data.email);
     if (emailError != null) {
-      state = AsyncValue.error('Please Enter Valid Email', StackTrace.empty);
+      state = AsyncValue.error(AppLocalizations.of(context)!.please_enter_valid_email, StackTrace.empty);
       return;
     }
 
     if (!await Helpers.isConnectedToInternet()) {
       state = AsyncValue.error(
-        'Connection Error, No Internet',
+        AppLocalizations.of(context)!.connection_Error_no_internet,
         StackTrace.empty,
       );
       return;
@@ -47,33 +49,36 @@ class LoginViewModel extends StateNotifier<AsyncValue<UserCredential?>> {
       final userCredential = await AuthServices.signIn(data);
 
       final user = userCredential?.user;
+
       if (user == null) {
-        state = AsyncValue.error("This user not found", StackTrace.current);
+        state = AsyncValue.error(AppLocalizations.of(context)!.this_user_not_found, StackTrace.current);
         return;
       }
 
       if (!user.emailVerified) {
-        state = AsyncValue.error("Email is not verified", StackTrace.current);
+        state = AsyncValue.error(AppLocalizations.of(context)!.email_is_not_verified, StackTrace.current);
         return;
       }
 
 
       state = AsyncValue.data(userCredential);
 
-    } catch (e, st) {
+    } on FirebaseAuthException catch (e, st) {
       final errorStr = e.toString();
       String msg;
       if (errorStr.contains("network-request-failed")) {
-        msg = "No internet connection, please try again.";
+        msg = AppLocalizations.of(context)!.connection_Error_no_internet;
       } else if (errorStr.contains("user-not-found")) {
-        msg = "No account found with this email.";
+        msg = AppLocalizations.of(context)!.this_user_not_found;
       } else if (errorStr.contains("wrong-password")) {
         msg = "Incorrect password, please try again.";
       } else {
-        msg = "Login failed, please try again.";
+        msg = AppLocalizations.of(context)!.login_failed;
       }
 
       state = AsyncValue.error(msg, st);
+    } catch(e,st){
+      print("$e $st");
     }
   }
 

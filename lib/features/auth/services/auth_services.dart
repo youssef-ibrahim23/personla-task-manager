@@ -41,7 +41,9 @@ class AuthServices {
 
       user.uid = credential.user!.uid;
 
-      user.image = await Helpers.imageToBase64(File(user.image!));
+      if(user.image != null){
+        user.image = await Helpers.imageToBase64(File(user.image!));
+      }
 
       await DBServices.insertUser(user: user);
 

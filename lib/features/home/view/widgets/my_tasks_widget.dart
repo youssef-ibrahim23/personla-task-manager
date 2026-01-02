@@ -4,6 +4,7 @@ import 'package:personal_task/core/shared/task/task_item.dart';
 import 'package:personal_task/core/shared/task/tasks_shimmer.dart';
 import 'package:personal_task/core/utils/DB/models/task.dart';
 import 'package:personal_task/features/tasks/views/all_tasks_view.dart';
+import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 
 class MyTasksWidget extends StatelessWidget {
   final List<Task>? tasks;
@@ -38,7 +39,7 @@ class MyTasksWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'My Tasks',
+                    AppLocalizations.of(context)!.my_tasks,
                     style: TextStyle(
                       fontFamily: 'Luckiest Guy',
                       fontSize: 18,
@@ -48,7 +49,10 @@ class MyTasksWidget extends StatelessWidget {
                   const SizedBox(width: 8),
                   Container(
                     alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(50),
@@ -65,11 +69,19 @@ class MyTasksWidget extends StatelessWidget {
                 ],
               ),
               TextButton(
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AllTasksView(tasks: tasks)));
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AllTasksView(
+                        tasks: tasks,
+                        title: AppLocalizations.of(context)!.my_tasks,
+                      ),
+                    ),
+                  );
                 },
                 child: Text(
-                  'See All',
+                  AppLocalizations.of(context)!.see_all,
                   style: TextStyle(
                     fontFamily: 'Luckiest Guy',
                     color: AppColors.primary,
@@ -96,16 +108,14 @@ class MyTasksWidget extends StatelessWidget {
           state
               ? TasksShimmer()
               : ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: tasks!.length > 4
-                ? 4
-                : tasks?.length,
-            itemBuilder: (context, index) {
-              final task = tasks![index];
-              return TaskItem(task: task,);
-            },
-          ),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: tasks!.length > 4 ? 4 : tasks?.length,
+                  itemBuilder: (context, index) {
+                    final task = tasks![index];
+                    return TaskItem(task: task);
+                  },
+                ),
         ],
       ),
     );

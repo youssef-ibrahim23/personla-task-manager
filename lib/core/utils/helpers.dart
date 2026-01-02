@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
@@ -20,7 +21,9 @@ class Helpers {
 
   static Future<String?> getUID() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('uid');
+    String uid = prefs.getString('uid') ?? '';
+    print(uid);
+    return uid;
   }
 
   static Future<bool> toggleLoginState() async {
@@ -42,7 +45,10 @@ class Helpers {
       dialogType: dialogType,
       title: title,
       desc: message,
-      btnOkText: openMailOption ? 'Open Mail' : null,
+      dialogBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      titleTextStyle: TextStyle(color: Theme.of(context).colorScheme.surface),
+      descTextStyle: TextStyle(color: Theme.of(context).colorScheme.surface,),
+      btnOkText: openMailOption ? AppLocalizations.of(context)!.open_mail : null,
       btnOkOnPress: openMailOption
           ? () async {
         await DeviceAppsPlus().openApp('com.google.android.gm');
@@ -78,7 +84,9 @@ class Helpers {
       final resized = img.copyResize(image, width: 800);
       finalBytes = img.encodeJpg(resized, quality: 70);
       if (finalBytes.length > firestoreMaxBytes) {
-        print('Image too large after resizing/compression, skipping.');
+        print('Image too large after resizin'
+            ''
+            'g/compression, skipping.');
         return '';
       }
     } else {
@@ -108,5 +116,29 @@ class Helpers {
     final placemarks = await placemarkFromCoordinates(pos.latitude, pos.longitude);
 
     return placemarks.isNotEmpty ? placemarks.first.country : null;
+  }
+
+  static String toArabicNumber(String input) {
+    const englishToArabicDigits = {
+      '0': '٠',
+      '1': '١',
+      '2': '٢',
+      '3': '٣',
+      '4': '٤',
+      '5': '٥',
+      '6': '٦',
+      '7': '٧',
+      '8': '٨',
+      '9': '٩',
+    };
+    return input.split('').map((e) => englishToArabicDigits[e] ?? e).join();
+  }
+
+  static Future<int> generateUniqueNumber() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastValue = prefs.getInt('lastValue') ?? 0;
+    final next = lastValue + 1;
+    await prefs.setInt('lastValue', next);
+    return next;
   }
 }

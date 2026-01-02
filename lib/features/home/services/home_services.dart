@@ -3,11 +3,15 @@ import 'package:personal_task/core/utils/DB/db_services.dart';
 import 'package:personal_task/core/utils/DB/firestore_services.dart';
 import 'package:personal_task/core/utils/DB/models/task.dart';
 import 'package:personal_task/core/utils/helpers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/DB/models/Weather.dart';
 
 class HomeServices {
   static Future<Weather?> getWeather() async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      final languageCode = prefs.getString(AppStrings.prefLanguage) ?? 'en';
       if (await Helpers.isConnectedToInternet()) {
         String? country = await Helpers.getCountryUsingGPS();
         country ??= "Cairo";
@@ -17,7 +21,7 @@ class HomeServices {
           queryParameters: {
             'key': "53835f94cc41454aa90192103251311",
             'q': country,
-            'lang': 'en',
+            'lang': languageCode,
           },
         );
 
@@ -76,7 +80,7 @@ class HomeServices {
         }
         return tasks;
       } else {
-        return [];
+        return null;
       }
     } catch (e) {
       print('Get public tasks error: $e');
@@ -84,8 +88,21 @@ class HomeServices {
     }
   }
 
+  static Future<List<Task>?> getPendingTasks() async {
+    final uid = await Helpers.getUID();
+    try {
+      if (uid == null) return null;
+      return DBServices.getPendingTasks(uid);
+    } catch (e) {
+      print('Get pending tasks error: $e');
+      return null;
+    }
+  }
+
   static Future<int> deleteTask(int taskId) async {
     try {
+
+      
       if (await Helpers.isConnectedToInternet()) {
         DBServices.deleteTask(taskId);
         FireStoreServices().deleteTask(taskId: taskId.toString());
