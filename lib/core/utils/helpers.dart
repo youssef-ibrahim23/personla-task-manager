@@ -16,6 +16,7 @@ class Helpers {
 
   static Future<bool> saveUID(String uid) async {
     final prefs = await SharedPreferences.getInstance();
+    print('uid saved $uid');
     return prefs.setString('uid', uid);
   }
 
@@ -26,10 +27,9 @@ class Helpers {
     return uid;
   }
 
-  static Future<bool> toggleLoginState() async {
+  static Future<bool> toggleLoginState(bool status) async {
     final prefs = await SharedPreferences.getInstance();
-    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    return prefs.setBool('isLoggedIn', !isLoggedIn);
+    return prefs.setBool('isLoggedIn', status);
   }
 
   static void displayDialog({
@@ -96,18 +96,6 @@ class Helpers {
     return base64Encode(finalBytes);
   }
 
-  static Future<File?> imageToFile(String base64String, String path) async {
-    try {
-      final bytes = base64Decode(base64String);
-      final file = File(path);
-      await file.writeAsBytes(bytes);
-      return file;
-    } catch (e) {
-      print('Error converting Base64 to file: $e');
-      return null;
-    }
-  }
-
   static Future<String?> getCountryUsingGPS() async {
     final permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) return null;
@@ -140,5 +128,22 @@ class Helpers {
     final next = lastValue + 1;
     await prefs.setInt('lastValue', next);
     return next;
+  }
+  static Future<bool> saveString(String key, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    print("Data: $value");
+    return await prefs.setString(key, value);
+  }
+  static Future<bool> saveBool(String key, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    return await prefs.setBool(key, value);
+  }
+  static Future<String?> getString(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(key);
+  }
+  static Future<bool?> getBool(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(key);
   }
 }

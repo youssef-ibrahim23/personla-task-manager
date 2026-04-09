@@ -6,9 +6,27 @@ import '../../../core/utils/DB/models/user.dart';
 
 class ProfileServices {
   static Future<User?> getProfileData() async {
+    final isGoogle = await Helpers.getBool('isGoogle');
+
+    if (isGoogle == true) {
+      final name = await Helpers.getString('name');
+      final email = await Helpers.getString('email');
+      final photo = await Helpers.getString('photo');
+      print(photo);
+
+      return User(
+        name: name ?? '',
+        email: email ?? '',
+        phoneNumber: '',
+        image: photo
+      );
+    }
     try {
       final uid = await Helpers.getUID();
+
       if (uid == null) return null;
+
+      print(uid);
 
       if(await Helpers.isConnectedToInternet()){
         return await FireStoreServices().getUser(uid);
@@ -47,4 +65,5 @@ class ProfileServices {
       throw Exception("Failed to update profile");
     }
   }
+
 }

@@ -95,7 +95,6 @@ class TaskList extends ConsumerWidget {
     final locale = ref.read(localeProvider.notifier).getLocale();
 
     return Container(
-      padding: EdgeInsets.all(5),
       color: theme.colorScheme.primaryContainer,
       child: Column(
         children: [
@@ -103,7 +102,7 @@ class TaskList extends ConsumerWidget {
           const SizedBox(height: 12),
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 5),
               itemCount: tasks!.length > 4 ? 4 : tasks!.length,
               separatorBuilder: (context, index) => const SizedBox(height: 8),
               itemBuilder: (context, index) {

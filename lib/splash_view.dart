@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -13,6 +14,7 @@ import '../core/utils/localization/l10n/app_localizations.dart';
 import 'core/utils/localization/locale_provider.dart';
 import 'core/utils/notifications/local_notifcation_services.dart';
 import 'core/utils/work-manager/work_manager_services.dart';
+import 'package:personal_task/features/home/view/home_view.dart';
 
 class SplashView extends ConsumerStatefulWidget {
   const SplashView({super.key});
@@ -22,6 +24,8 @@ class SplashView extends ConsumerStatefulWidget {
 }
 
 class _SplashViewState extends ConsumerState<SplashView> {
+
+
   @override
   void initState() {
     super.initState();
@@ -31,12 +35,12 @@ class _SplashViewState extends ConsumerState<SplashView> {
   }
 
   Future<void> _startApp() async {
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await Future.delayed(const Duration(seconds: 2));
 
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
-    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
     if (isFirstTime) {
       await WorkManagerServices.registerPeriodicSync(
@@ -89,7 +93,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
       context,
       MaterialPageRoute(
         builder: (_) =>
-            isLoggedIn ? const BottomNavigation() : const LoginView(),
+        LoginView(),
       ),
     );
   }
@@ -103,7 +107,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: screenHeight * 0.4),
+            SizedBox(height: screenHeight * 0.37),
             Text(
               AppLocalizations.of(context)!.app_title,
               style: TextStyle(

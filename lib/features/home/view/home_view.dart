@@ -5,9 +5,8 @@ import 'package:personal_task/core/constants/app_colors.dart';
 import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 import 'package:personal_task/core/utils/localization/locale_provider.dart';
 import 'package:personal_task/features/home/view-model/home_view_model.dart';
-import 'package:personal_task/features/home/view/widgets/tabbed_tasks_widget.dart';
-import 'package:personal_task/features/home/view/widgets/weather_widget.dart';
-import 'package:personal_task/features/home/view/widgets/task_stats_card.dart';
+import 'package:personal_task/features/home/view/layouts/mobile_layout.dart';
+import 'package:personal_task/features/home/view/layouts/tablet_layout.dart';
 import 'package:personal_task/features/tasks/views/task_view.dart';
 
 class HomeView extends ConsumerStatefulWidget {
@@ -26,12 +25,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     final localizations = AppLocalizations.of(context)!;
-
-    final homeState = ref.watch(homeViewModelProvider);
 
     final locale = ref.watch(localeProvider);
     final isArabic = locale.languageCode == 'ar';
+
+    bool isMobile = screenWidth < 600;
+    bool isTablet = screenWidth < 1281;
 
     return Scaffold(
       appBar: AppBar(
@@ -47,41 +48,19 @@ class _HomeViewState extends ConsumerState<HomeView> {
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              SizedBox(height: screenHeight * 0.02),
-              WeatherWidget(
-                weather: homeState.value?.weather,
-                state: homeState.isLoading,
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              TabbedTasksWidget(
-                myTasks: homeState.value?.myTasks ?? [],
-                pendingTasks: homeState.value?.pendingTasks ?? [],
-                publicTasks: homeState.value?.publicTasks,
-                state: homeState.isLoading,
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              TaskStatsCard(
-                myTasks: homeState.value?.myTasks ?? [],
-                isLoading: homeState.isLoading,
-              ),
-            ],
-          ),
+          child: isMobile
+              ? MobileLayout()
+              : isTablet
+              ? TabletLayout()
+              : null,
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final result =
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const TaskView()),
-              ) ??
-              false;
-
-          if (result) {
-            ref.read(homeViewModelProvider.notifier).getHomeData();
-          }
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const TaskView()),
+          );
         },
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         child: const Icon(Icons.add_task_sharp, color: AppColors.primary),

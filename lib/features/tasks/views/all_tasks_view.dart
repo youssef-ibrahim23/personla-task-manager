@@ -85,7 +85,7 @@ class _AllTasksViewState extends ConsumerState<AllTasksView> {
     final theme = Theme.of(context);
     final homeState = ref.watch(homeViewModelProvider);
     final isLoading = homeState.isLoading;
-    
+
     // Update local tasks from home state if available
     if (homeState.hasValue && homeState.value != null) {
       final homeData = homeState.value!;
@@ -98,12 +98,12 @@ class _AllTasksViewState extends ConsumerState<AllTasksView> {
       } else if (widget.title == AppLocalizations.of(context)!.public_tasks) {
         updatedTasks = homeData.publicTasks;
       }
-      
+
       if (updatedTasks != null && !_isDeleting) {
         _localTasks = updatedTasks;
       }
     }
-    
+
     // Filter out the deleting task from display
     final displayTasks = _localTasks?.where((task) => task.id != _deletingTaskId).toList();
     final taskCount = displayTasks?.length ?? 0;
@@ -240,7 +240,7 @@ class _AllTasksViewState extends ConsumerState<AllTasksView> {
       BuildContext context, bool isLoading, ThemeData theme) {
     // Filter out the deleting task from display
     final displayTasks = _localTasks?.where((task) => task.id != _deletingTaskId).toList();
-    
+
     return Positioned.fill(
       top: 200,
       child: Container(
@@ -310,10 +310,10 @@ class _AllTasksViewState extends ConsumerState<AllTasksView> {
                 final canDelete = task.ownerId == _currentUserId;
                 final locale = ref.watch(localeProvider);
                 final isArabic = locale.languageCode == 'ar';
-                
+
                 return Dismissible(
                   key: ValueKey(task.id),
-                  direction: canDelete 
+                  direction: canDelete
                       ? (isArabic ? DismissDirection.startToEnd : DismissDirection.endToStart)
                       : DismissDirection.none,
                   background: Container(
@@ -333,26 +333,26 @@ class _AllTasksViewState extends ConsumerState<AllTasksView> {
                       size: 28,
                     ),
                   ),
-                  confirmDismiss: canDelete 
+                  confirmDismiss: canDelete
                       ? (direction) async {
                           return await _showDeleteConfirmation(context, task);
                         }
                       : null,
-                  onDismissed: canDelete 
+                  onDismissed: canDelete
                       ? (direction) async {
                           // Only proceed if user owns the task
                           if (task.ownerId != _currentUserId) return;
-                          
+
                           // Optimistically remove task from UI
                           setState(() {
                             _isDeleting = true;
                             _deletingTaskId = task.id;
                             _localTasks = _localTasks?.where((t) => t.id != task.id).toList();
                           });
-                    
+
                           try {
-                            await ref.read(homeViewModelProvider.notifier).deleteTask(task.id!);
-                            
+                            await ref.read(homeViewModelProvider.notifier).deleteTask(task);
+
                             // Refresh from home state after deletion
                             final homeState = ref.read(homeViewModelProvider);
                             if (homeState.hasValue && homeState.value != null) {
@@ -371,7 +371,7 @@ class _AllTasksViewState extends ConsumerState<AllTasksView> {
                                 });
                               }
                             }
-                            
+
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -390,7 +390,7 @@ class _AllTasksViewState extends ConsumerState<AllTasksView> {
                             setState(() {
                               _localTasks = widget.tasks;
                             });
-                            
+
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(

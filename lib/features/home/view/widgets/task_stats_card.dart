@@ -94,146 +94,148 @@ class TaskStatsCard extends StatelessWidget {
           width: 1.5,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  Icons.analytics_outlined,
-                  color: theme.colorScheme.primary,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      localizations.task_statistics,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: theme.colorScheme.primary,
-                        fontFamily: 'Rakkas-Regular',
-                      ),
-                    ),
-                    Text(
-                      localizations.overview_of_your_tasks,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: theme.colorScheme.primary.withOpacity(0.6),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          // Stats Grid
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 1.5,
-            children: [
-              _buildStatItem(
-                context,
-                localizations.total_tasks,
-                totalTasks.toString(),
-                Icons.format_list_bulleted_rounded,
-                Colors.blue.shade500,
-                theme,
-              ),
-              _buildStatItem(
-                context,
-                localizations.completed,
-                completedTasks.toString(),
-                Icons.check_circle_rounded,
-                Colors.green.shade500,
-                theme,
-              ),
-              _buildStatItem(
-                context,
-                localizations.not_completed,
-                notCompletedTasks.toString(),
-                Icons.pending_actions_rounded,
-                Colors.orange.shade500,
-                theme,
-              ),
-              _buildStatItem(
-                context,
-                localizations.high_priority,
-                highPriorityTasks.toString(),
-                Icons.priority_high_rounded,
-                Colors.red.shade500,
-                theme,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          // Progress Bar
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: theme.colorScheme.primary.withOpacity(0.1),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Row(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      localizations.completion_progress,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                    Text(
-                      '$completionPercentage%',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: theme.colorScheme.primary,
-                        fontFamily: 'Rakkas-Regular',
-                      ),
-                    ),
-                  ],
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.analytics_outlined,
+                    color: theme.colorScheme.primary,
+                    size: 24,
+                  ),
                 ),
-                const SizedBox(height: 12),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: LinearProgressIndicator(
-                    value: totalTasks > 0 ? completedTasks / totalTasks : 0,
-                    minHeight: 10,
-                    backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      theme.colorScheme.primary,
-                    ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        localizations.task_statistics,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: theme.colorScheme.primary,
+                          fontFamily: 'Rakkas-Regular',
+                        ),
+                      ),
+                      Text(
+                        localizations.overview_of_your_tasks,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: theme.colorScheme.primary.withOpacity(0.6),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            // Stats Grid
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 1.5,
+              children: [
+                _buildStatItem(
+                  context,
+                  localizations.total_tasks,
+                  totalTasks.toString(),
+                  Icons.format_list_bulleted_rounded,
+                  Colors.blue.shade500,
+                  theme,
+                ),
+                _buildStatItem(
+                  context,
+                  localizations.completed,
+                  completedTasks.toString(),
+                  Icons.check_circle_rounded,
+                  Colors.green.shade500,
+                  theme,
+                ),
+                _buildStatItem(
+                  context,
+                  localizations.not_completed,
+                  notCompletedTasks.toString(),
+                  Icons.pending_actions_rounded,
+                  Colors.orange.shade500,
+                  theme,
+                ),
+                _buildStatItem(
+                  context,
+                  localizations.high_priority,
+                  highPriorityTasks.toString(),
+                  Icons.priority_high_rounded,
+                  Colors.red.shade500,
+                  theme,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            // Progress Bar
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withOpacity(0.1),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        localizations.completion_progress,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                      Text(
+                        '$completionPercentage%',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: theme.colorScheme.primary,
+                          fontFamily: 'Rakkas-Regular',
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: LinearProgressIndicator(
+                      value: totalTasks > 0 ? completedTasks / totalTasks : 0,
+                      minHeight: 10,
+                      backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        theme.colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

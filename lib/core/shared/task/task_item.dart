@@ -393,7 +393,7 @@ class _TaskItemState extends ConsumerState<TaskItem> with SingleTickerProviderSt
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context, false),
+                      onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
@@ -415,7 +415,7 @@ class _TaskItemState extends ConsumerState<TaskItem> with SingleTickerProviderSt
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context, true),
+                      onPressed: () => Navigator.pop(context , true),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red.shade500,
                         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -442,7 +442,7 @@ class _TaskItemState extends ConsumerState<TaskItem> with SingleTickerProviderSt
     );
 
     if (confirm == true && context.mounted) {
-      await ref.read(homeViewModelProvider.notifier).deleteTask(widget.task.id!);
+      await ref.read(homeViewModelProvider.notifier).deleteTask(widget.task);
     }
   }
 }

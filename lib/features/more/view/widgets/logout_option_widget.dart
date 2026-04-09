@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:personal_task/core/shared/image/image_providers.dart';
 import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 import 'package:personal_task/features/auth/views/login_view.dart';
 import 'package:personal_task/features/more/view-model/more_view_model.dart';
+
+
+import '../../../home/view-model/home_view_model.dart';
+import '../../../profile/view-models/profile_view_model.dart';
 
 class LogoutOptionWidget extends ConsumerWidget {
   const LogoutOptionWidget({super.key});
@@ -39,7 +44,7 @@ class LogoutOptionWidget extends ConsumerWidget {
             );
           }
         },
-        loading: () {},
+        loading: (){},
       );
     });
 
@@ -93,11 +98,11 @@ class LogoutOptionWidget extends ConsumerWidget {
                     content: Text(localizations.logout_confirmation , style: TextStyle(color: Theme.of(context).colorScheme.surface)),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.pop(context, false),
+                        onPressed: () => Navigator.pop(context),
                         child: Text(localizations.cancel , style: TextStyle(color: Theme.of(context).colorScheme.surface)),
                       ),
                       TextButton(
-                        onPressed: () => Navigator.pop(context, true),
+                        onPressed: () => Navigator.pop(context , true),
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.red.withOpacity(0.1),
                         ),
@@ -112,6 +117,10 @@ class LogoutOptionWidget extends ConsumerWidget {
 
                 if (confirmed == true && context.mounted) {
                   await ref.read(moreViewModelProvider.notifier).logout();
+                  ref.invalidate(profileViewModelProvider);
+                  ref.invalidate(profilePickedImageProvider);
+                  ref.invalidate(profileImageProvider);
+                  ref.invalidate(homeViewModelProvider);
                 }
               },
       ),

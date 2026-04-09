@@ -1,15 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
+import 'package:personal_task/features/auth/services/auth_services.dart';
 import 'package:personal_task/features/more/view/widgets/language_option_widget.dart';
 import 'package:personal_task/features/more/view/widgets/logout_option_widget.dart';
 import 'package:personal_task/features/more/view/widgets/theme_option_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class MoreView extends ConsumerWidget {
+import '../../../core/utils/theme/theme_provider.dart';
+
+class MoreView extends ConsumerStatefulWidget {
   const MoreView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MoreView> createState() => _MoreViewState();
+}
+
+class _MoreViewState extends ConsumerState<MoreView> {
+
+  bool biometricStatus = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBiometricStatus();
+  }
+
+  _loadBiometricStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      biometricStatus = prefs.getBool('isBiometricEnabled') ?? false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
@@ -115,7 +141,88 @@ class MoreView extends ConsumerWidget {
                 const SizedBox(height: 16),
                 const ThemeOptionWidget(),
                 SizedBox(height: screenHeight * 0.03),
-                // Logout Section
+                // sign in Selection Section
+                _buildSectionHeader(
+                  context,
+                  'Enable Biometric Login',
+                  Icons.fingerprint,
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.surface,
+                      width: 2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    leading: Icon(
+                      ref.watch(themeProvider) == ThemeMode.dark
+                          ? Icons.dark_mode
+                          : Icons.light_mode,
+                      color: Theme.of(context).primaryColor,
+                      size: 28,
+                    ),
+                    title: Text(
+                      "Biometric Login",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Theme.of(context).colorScheme.surface,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Enable Biometric Login',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.surface,
+                      ),
+                    ),
+                    trailing: Switch(
+                      value: biometricStatus,
+                      onChanged: (value) async {
+                        if (value) {
+                          final canUse = await AuthServices.canUseBiometric();
+
+                          if (!canUse) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Biometric authentication not available'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          final authenticated = await LocalAuthentication().authenticate(
+                            localizedReason: 'Please authenticate to enable it',
+                            biometricOnly: true,
+                          );
+
+                          if (!authenticated) return;
+                        }
+
+                        await AuthServices.toggleBiometricAvailability(value);
+
+                        setState(() {
+                          biometricStatus = value;
+                        });
+                      },
+                      activeColor: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.03),
                 _buildSectionHeader(
                   context,
                   localizations.account,
@@ -132,7 +239,11 @@ class MoreView extends ConsumerWidget {
     );
   }
 
-  Widget _buildSectionHeader(BuildContext context, String title, IconData icon) {
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title,
+    IconData icon,
+  ) {
     final theme = Theme.of(context);
     return Row(
       children: [
@@ -142,11 +253,7 @@ class MoreView extends ConsumerWidget {
             color: theme.primaryColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(
-            icon,
-            color: theme.primaryColor,
-            size: 24,
-          ),
+          child: Icon(icon, color: theme.primaryColor, size: 24),
         ),
         const SizedBox(width: 12),
         Text(

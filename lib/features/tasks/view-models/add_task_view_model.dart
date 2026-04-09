@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:personal_task/core/utils/helpers.dart';
 import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
 import 'package:personal_task/core/utils/validators.dart';
+import 'package:personal_task/features/home/view-model/home_view_model.dart';
 import 'package:personal_task/features/tasks/services/tasks_services.dart';
 
 import '../../../core/utils/DB/models/task.dart';
@@ -15,7 +16,7 @@ StateNotifierProvider<TaskViewModel, AsyncValue<void>>((ref) {
 class TaskViewModel extends StateNotifier<AsyncValue<void>> {
   TaskViewModel() : super(const AsyncValue.data(null));
 
-  Future<void> addTask(Task task , BuildContext context) async {
+  Future<void> addTask(Task task , BuildContext context , WidgetRef ref) async {
     state = const AsyncValue.loading();
     String? titleError = Validators.validateNotNull(task.title , AppLocalizations.of(context)!.enter_task_title);
     String? descriptionError = Validators.validateNotNull(task.description , AppLocalizations.of(context)!.enter_task_description);
@@ -64,17 +65,26 @@ class TaskViewModel extends StateNotifier<AsyncValue<void>> {
       final uid = await Helpers.getUID();
       task.ownerId = uid!;
       await TasksServices.addTask(task);
+      ref.read(homeViewModelProvider.notifier).homeModel.myTasks.add(task);
+      if(task.isShared){
+        ref.read(homeViewModelProvider.notifier).homeModel.publicTasks!.add(task);
+      }
+      if(!task.uploadStatus){
+        ref.read(homeViewModelProvider.notifier).homeModel.pendingTasks.add(task);
+      }
       state = const AsyncValue.data(null);
-      Navigator.pop(context, true);
+      Navigator.pop(context);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
   }
 
-  Future<void> updateTask(Task task , BuildContext context) async{
+  Future<void> updateTask(Task task , BuildContext context, WidgetRef ref) async{
     state = const AsyncValue.loading();
     try {
       await TasksServices.updateTask(task);
+      ref.read(homeViewModelProvider.notifier).homeModel.myTasks.remove(task);
+      ref.read(homeViewModelProvider.notifier).homeModel.myTasks.add(task);
       state = const AsyncValue.data(null);
           } catch (e, st) {
       state = AsyncValue.error(e, st);

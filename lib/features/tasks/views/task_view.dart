@@ -10,6 +10,7 @@ import 'package:personal_task/core/utils/localization/l10n/app_localizations.dar
 import 'package:personal_task/features/tasks/services/tasks_services.dart';
 import 'package:personal_task/features/tasks/view-models/add_task_view_model.dart';
 import 'package:personal_task/features/tasks/views/widgets/add_photo_button.dart';
+import 'package:personal_task/features/tasks/views/widgets/add_plan_button.dart';
 import 'package:personal_task/features/tasks/views/widgets/attachments_grid.dart';
 import 'package:personal_task/features/tasks/views/widgets/cutom_drop_down_button.dart';
 import 'package:personal_task/features/tasks/views/widgets/date_time_picker.dart';
@@ -375,6 +376,15 @@ class _AddTaskViewState extends ConsumerState<TaskView> {
                     });
                   },
                 ),
+                const SizedBox(height: 12),
+
+                AddPlanButton(
+                  onPlanAdded: (attachment) {
+                    setState(() {
+                      attachments.add(attachment);
+                    });
+                  },
+                ),
                 if (attachments.isNotEmpty) ...[
                   SizedBox(height: screenHeight * 0.02),
                   AttachmentsGrid(
@@ -415,7 +425,7 @@ class _AddTaskViewState extends ConsumerState<TaskView> {
                         widget.task!.isShared = isPublic;
                         await ref
                             .read(taskViewModelProvider.notifier)
-                            .updateTask(widget.task!, context);
+                            .updateTask(widget.task!, context , ref);
                         Navigator.pop(context, true);
                       }
                     : () async {
@@ -442,7 +452,7 @@ class _AddTaskViewState extends ConsumerState<TaskView> {
                         );
                         await ref
                             .read(taskViewModelProvider.notifier)
-                            .addTask(task, context);
+                            .addTask(task, context , ref);
                       },
                 state: ref.watch(taskViewModelProvider).isLoading,
               ) : Button(text: AppLocalizations.of(context)!.you_can_not_edit_on_task, onPressed: (){}, state: false , isGray: true,),

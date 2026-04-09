@@ -12,6 +12,7 @@ class HomeServices {
     try {
       final prefs = await SharedPreferences.getInstance();
       final languageCode = prefs.getString(AppStrings.prefLanguage) ?? 'en';
+
       if (await Helpers.isConnectedToInternet()) {
         String? country = await Helpers.getCountryUsingGPS();
         country ??= "Cairo";

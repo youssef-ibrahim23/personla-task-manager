@@ -11,4 +11,7 @@ class AppStrings {
   // General App Constants //
   static const String defaultLocale = 'en';
 
+  static const double mobileWidth = 600;
+  static const double tabletWidth = 1024;
+
 }

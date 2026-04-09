@@ -12,16 +12,18 @@ class ImageWidget extends ConsumerWidget {
   final StateProvider<XFile?> pickedImageProvider;
   final String? cloudImage;
   final bool state;
+  final bool? isGoogle;
 
   const ImageWidget({
     super.key,
     required this.pickedImageProvider,
     this.cloudImage,
+    this.isGoogle = false,
     required this.state,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref)  {
     final pickedImage = ref.watch(pickedImageProvider);
 
     Widget displayedImage;
@@ -35,16 +37,27 @@ class ImageWidget extends ConsumerWidget {
       );
     } else if (cloudImage != null && cloudImage!.isNotEmpty) {
       try {
-        displayedImage = Image.memory(
-          base64Decode(
-            cloudImage!.contains(',')
-                ? cloudImage!.split(',').last
-                : cloudImage!,
-          ),
-          width: 100,
-          height: 100,
-          fit: BoxFit.cover,
-        );
+        if (isGoogle == true) {
+          displayedImage = Image.network(
+            cloudImage!,
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) =>
+                Image.asset("assets/profile-placeholder.jpeg"),
+          );
+        } else{
+          displayedImage = Image.memory(
+            base64Decode(
+              cloudImage!.contains(',')
+                  ? cloudImage!.split(',').last
+                  : cloudImage!,
+            ),
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+          );
+        }
       } catch (_) {
         displayedImage = Image.asset("assets/profile-placeholder.jpeg");
       }

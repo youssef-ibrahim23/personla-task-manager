@@ -110,7 +110,7 @@ class _RegisterStateView extends ConsumerState<RegisterView> {
               SizedBox(height: screenHeight * 0.03),
               Container(
                 width: screenWidth,
-                height: screenHeight * 0.85,
+                height: screenHeight * 0.87,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(30),

@@ -285,7 +285,7 @@ class _AllTasksViewState extends ConsumerState<AllTasksView> {
                     return await _showDeleteConfirmation(context, widget.tasks![index]);
                   },
                   onDismissed: (direction) async {
-                    await ref.read(homeViewModelProvider.notifier).deleteTask(widget.tasks![index].id!);
+                    await ref.read(homeViewModelProvider.notifier).deleteTask(widget.tasks![index]);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         backgroundColor: Colors.red.shade500,

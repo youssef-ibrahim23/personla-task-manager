@@ -285,7 +285,7 @@ class _AddTaskViewState extends ConsumerState<TaskView> {
                       widget.task!.isShared = isPublic;
                       await ref
                           .read(taskViewModelProvider.notifier)
-                          .updateTask(widget.task! , context);
+                          .updateTask(widget.task! , context , ref);
                       Navigator.pop(context, true);
                     }
                   : () async {
@@ -312,7 +312,7 @@ class _AddTaskViewState extends ConsumerState<TaskView> {
                       );
                       await ref
                           .read(taskViewModelProvider.notifier)
-                          .addTask(task , context);
+                          .addTask(task , context , ref);
                     },
               state: ref.watch(taskViewModelProvider).isLoading,
             ),

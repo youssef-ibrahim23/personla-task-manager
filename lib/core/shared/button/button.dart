@@ -7,6 +7,7 @@ class Button extends ConsumerStatefulWidget {
   final VoidCallback onPressed;
   final bool state;
   final bool isGray;
+  final bool isLogin;
 
   const Button({
     super.key,
@@ -14,6 +15,7 @@ class Button extends ConsumerStatefulWidget {
     required this.onPressed,
     required this.state,
     this.isGray = false,
+    this.isLogin = false
   });
 
   @override
@@ -29,7 +31,7 @@ class _ButtonState extends ConsumerState<Button> {
     return widget.state
         ? LoadingAnimationWidget.stretchedDots(color:theme.colorScheme.background, size: 40)
         : Container(
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: widget.isLogin ? MediaQuery.of(context).size.width * 0.75 : MediaQuery.of(context).size.width * 0.8,
         height: MediaQuery.of(context).size.height * 0.06,
         decoration: BoxDecoration(
           color: widget.isGray ? Colors.grey : theme.colorScheme.background,

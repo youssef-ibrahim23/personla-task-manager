@@ -73,6 +73,7 @@ class _TabbedTasksWidgetState extends ConsumerState<TabbedTasksWidget>
     super.build(context);
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+    bool isMobile = screenWidth < 600;
     final theme = Theme.of(context);
 
     return SlideTransition(
@@ -80,7 +81,7 @@ class _TabbedTasksWidgetState extends ConsumerState<TabbedTasksWidget>
       child: FadeTransition(
         opacity: _fadeAnimation,
         child: Container(
-          width: screenWidth * 0.95,
+          width: isMobile ? screenWidth * 0.95 : screenWidth * 0.7,
           margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           decoration: BoxDecoration(
             gradient: LinearGradient(

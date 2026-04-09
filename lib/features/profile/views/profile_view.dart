@@ -9,6 +9,7 @@ import 'package:personal_task/core/utils/helpers.dart';
 import 'package:personal_task/core/shared/button/button.dart';
 import 'package:personal_task/core/shared/text-field/text_field.dart';
 import 'package:personal_task/core/utils/localization/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/utils/DB/models/user.dart';
 import '../view-models/profile_view_model.dart';
@@ -31,9 +32,18 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
 
   bool _didFetchProfile = false;
 
+  bool isGoogle = false;
+
+  _loadIsGoogle()async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    isGoogle =  sharedPreferences.getBool('isGoogle') ?? false;
+  }
+
   @override
   void initState() {
     super.initState();
+
+    _loadIsGoogle();
 
     Future.microtask(() {
       final prev = ref.read(profileViewModelProvider);
@@ -119,6 +129,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                     pickedImageProvider: profilePickedImageProvider,
                     cloudImage: ref.watch(profileImageProvider),
                     state: ref.watch(profileViewModelProvider).isLoading,
+                    isGoogle: isGoogle,
                   ),
                   SizedBox(height: screenHeight * 0.05),
                   CustomTextField(
