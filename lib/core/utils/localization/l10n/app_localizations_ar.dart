@@ -507,4 +507,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settings => 'الإعدادات';
+
+  @override
+  // TODO: implement good_morning
+  String get good_morning => 'صباح الخير';
+
+  @override
+  String get welcome_back => 'مرحباً بعودتك';
+
+  @override
+  String get tasks_completed => 'المهام المكتملة';
+
+  @override
+  String get no_tasks_available => 'لا توجد مهام متاحة';
+
+  @override
+  String get tasks_will_appear_here => 'ستظهر المهام هنا';
 }

@@ -1064,6 +1064,16 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  String get good_morning;
+
+  String get welcome_back;
+
+  String get tasks_completed;
+
+  String get no_tasks_available;
+
+  String get tasks_will_appear_here;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

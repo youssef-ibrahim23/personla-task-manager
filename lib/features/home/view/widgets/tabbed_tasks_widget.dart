@@ -178,17 +178,17 @@ class _TabbedTasksWidgetState extends ConsumerState<TabbedTasksWidget>
                     controller: _tabController,
                     children: [
                       TaskList(
-                        tasks: widget.myTasks!,
+                        tasks: widget.myTasks ?? [],
                         title: AppLocalizations.of(context)!.my_tasks,
                         isLoading: widget.state,
                       ),
                       TaskList(
-                        tasks: widget.pendingTasks!,
+                        tasks: widget.pendingTasks ?? [],
                         title: AppLocalizations.of(context)!.pending_tasks,
                         isLoading: widget.state,
                       ),
                       TaskList(
-                        tasks: widget.publicTasks,
+                        tasks: widget.publicTasks ?? [],
                         title: AppLocalizations.of(context)!.public_tasks,
                         isLoading: widget.state,
                       ),

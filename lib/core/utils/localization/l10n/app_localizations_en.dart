@@ -514,4 +514,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  // TODO: implement good_morning
+  String get good_morning => 'Good Morning';
+
+  @override
+  String get welcome_back => 'Welcome Back!';
+
+  @override
+  String get tasks_completed => 'Tasks Completed';
+
+  @override
+  String get no_tasks_available => 'No tasks available';
+
+  @override
+  String get tasks_will_appear_here => 'Your tasks will appear here once you create them';
 }

@@ -42,7 +42,7 @@ class TabletLayout extends ConsumerWidget {
                 ),
                 TaskStatsCard(
                   myTasks: homeState.value?.myTasks ?? [],
-                  isLoading: homeState.isLoading,
+                  isLoading: homeState.isLoading, pendingTasks: [], publicTasks: [],
                 ),
               ],
             ),

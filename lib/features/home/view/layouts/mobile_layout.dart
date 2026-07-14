@@ -15,19 +15,18 @@ class MobileLayout extends ConsumerWidget{
     final homeState = ref.watch(homeViewModelProvider);
     return Column(
       children: [
-        SizedBox(height: screenHeight * 0.02),
         WeatherWidget(
           weather: homeState.value?.weather,
           state: homeState.isLoading,
         ),
-        SizedBox(height: screenHeight * 0.02),
+        SizedBox(height: screenHeight * 0.001),
         TabbedTasksWidget(
           myTasks: homeState.value?.myTasks ?? [],
           pendingTasks: homeState.value?.pendingTasks ?? [],
           publicTasks: homeState.value?.publicTasks,
           state: homeState.isLoading,
         ),
-        SizedBox(height: screenHeight * 0.02),
+        SizedBox(height: screenHeight * 0.001),
         TaskStatsCard(
           myTasks: homeState.value?.myTasks ?? [],
           isLoading: homeState.isLoading,
